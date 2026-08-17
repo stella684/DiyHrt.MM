@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DIYHRT MM - Guide</title>
+    <title>DIYHRT MM</title>
     
-    <!-- Importing modern fonts for better readability -->
+    <!-- Modern fonts for better readability -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Padauk:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
@@ -64,6 +64,7 @@
             gap: 12px;
             margin-bottom: 30px;
             text-decoration: none;
+            cursor: pointer;
         }
 
         .brand-icon {
@@ -103,7 +104,7 @@
             border: 1px solid transparent;
         }
 
-        nav a.menu-link:hover {
+        nav a.menu-link:hover, nav a.menu-link.active {
             background-color: var(--surface-hover);
             border-color: var(--border);
             color: var(--accent-blue);
@@ -118,16 +119,15 @@
             margin: 0 auto;
         }
 
-        #content-container {
-            animation: fadeIn 0.4s ease-out;
-        }
+        #home-content { display: block; animation: fadeIn 0.4s ease-out; }
+        #txt-content-wrapper { display: none; animation: fadeIn 0.4s ease-out; }
 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Formatted Text Styles */
+        /* Rendered Text Styling applied to fetched .txt files */
         .alert-box {
             background-color: var(--warning-bg);
             color: var(--warning-text);
@@ -138,21 +138,21 @@
             font-weight: 600;
         }
 
-        h1.page-title {
+        #page-title {
             font-size: 2.2rem;
             color: var(--text-primary);
             margin-bottom: 40px;
             line-height: 1.3;
+            margin-top: 0;
         }
 
-        h2.section-title {
+        .section-title {
             color: var(--accent-blue);
             margin-top: 50px;
             margin-bottom: 20px;
             padding-bottom: 10px;
             border-bottom: 1px solid var(--border);
             font-size: 1.5rem;
-            scroll-margin-top: 40px; /* Offset for smooth scrolling */
         }
 
         .step-num {
@@ -164,14 +164,15 @@
             margin-right: 8px;
         }
 
-        h3.sub-title {
+        .sub-title {
             color: var(--accent-pink);
             margin-top: 35px;
             margin-bottom: 15px;
             font-size: 1.2rem;
+            font-weight: bold;
         }
 
-        p {
+        .text-body p {
             margin-bottom: 1.2rem;
             color: #c9d1d9;
         }
@@ -180,6 +181,7 @@
             margin-bottom: 8px;
             padding-left: 20px;
             position: relative;
+            color: #c9d1d9;
         }
 
         .list-item::before {
@@ -202,11 +204,6 @@
             border-bottom-color: var(--accent-pink);
         }
 
-        strong {
-            color: var(--text-primary);
-            font-weight: 600;
-        }
-
         /* Mobile Adjustments */
         @media (max-width: 800px) {
             body { flex-direction: column; }
@@ -218,151 +215,58 @@
                 border-bottom: 1px solid var(--border);
             }
             main { padding: 30px 20px; }
-            h1.page-title { font-size: 1.8rem; }
+            #page-title { font-size: 1.8rem; }
         }
     </style>
 </head>
 <body>
 
     <nav>
-        <a href="#" class="brand-container">
-            <!-- If icon.png doesn't exist in the folder, the onerror event safely hides it -->
+        <div class="brand-container" onclick="goHome(event)">
+            <!-- Icon loads from your root folder. Safe fallback if missing -->
             <img src="icon.png" alt="Icon" class="brand-icon" onerror="this.style.display='none'">
             <span class="brand-text">DIYHRT MM</span>
-        </a>
+        </div>
 
-        <div class="category-title">Guide Contents</div>
-        <!-- The Javascript will automatically inject Table of Contents links here -->
-        <div id="toc-container"></div>
+        <div class="category-title">Guide</div>
+        <a href="/guide/01" class="menu-link" onclick="loadPage(event, 'guide', '01', 'Transfeminine HRT Guide')">Transfeminine HRT Sublingual/Buccal</a>
+        <a href="/guide/02" class="menu-link" onclick="loadPage(event, 'guide', '02', 'Blood Test လမ်းညွှန်ချက်များ')">Blood Test လမ်းညွှန်ချက်များ</a>
+
+        <div class="category-title">About</div>
+        <a href="/about/01" class="menu-link" onclick="loadPage(event, 'about', '01', 'ဆက်သွယ်ရန် / ဝယ်ယူရန်')">ဆက်သွယ်ရန် / ဝယ်ယူရန်</a>
     </nav>
 
     <main>
-        <div id="content-container">
-            <!-- The Javascript will inject the formatted text here -->
+        <!-- Homepage View -->
+        <div id="home-content">
+            <h1 style="color: var(--text-primary); font-size: 2.2rem;">Welcome to DIYHRT MM</h1>
+            <p style="color: var(--text-secondary); font-size: 1.1rem;">Select a guide from the menu to read the documentation.</p>
+        </div>
+
+        <!-- Document View -->
+        <div id="txt-content-wrapper">
+            <h1 id="page-title"></h1>
+            <div id="text-container" class="text-body">Loading...</div>
         </div>
     </main>
 
     <script>
-        // 1. The Guide Text
-        const rawGuideText = `⚠️ Disclaimer: This is a DIY harm reduction guide for educational purposes only, not medical advice. Always perform regular blood tests (E2 & T levels) to monitor your health.
-
-Transfeminine များအတွက် HRT (Hormone Replacement Therapy) Sublingual/Buccal လမ်းညွှန်အကျဉ်း
-
-ယခုလမ်းညွှန်ကHRTကိုsublingual/buccalနည်းလမ်းနဲ့သွားချင်တဲ့သူတွေအတွက်ပါ
-
-[1] Estrogen (အီစထရိုဂျင်)
-HRT စတင်ရာမှာ Estrogen က အရေးအပါတဲ့ ဟော်မုန်းဖြစ်ပါတယ်။
-
-Estrogen ရရှိနိုင်တဲ့ နည်းလမ်းတွေက -
-
-• Oral : ဆေးပြားကို ရေနဲ့ မျိုချသောက်သုံးခြင်း
-
-• Sublingual / Buccal : ဆေးပြားကို လျှာအောက် (Sublingual) သို့မဟုတ် ပါးစောင်ကြား (Buccal) တွင် ၁၅မိနစ်အကြာထည့်ထားပြီးအရည်ပျော်စေခြင်း (ရှေ့တံတွေးမျိုမချမိအောင်အတတ်နိုင်ဆုံးထိန်းပေးပါ)
-
-Sublingual / Buccal လုပ်ပြီးလို့နောက်ထပ်၁၀မိနစ်လောက်ကို ရေသောက်/အစားစားခြင်းမလုပ်ပါနဲ့။
-
-• Gel: အရေပြားပေါ်တွင် လိမ်းကျံနိုင်သောဂျယ်လ်
-
-• Injection: ဆေးထိုးသွင်းခြင်း
-
-* မှတ်ချက်: Estrogen ဆေးကို သာသုံးတဲ့ HRT (Monotherapy) ကို Injection (ထိုးဆေး) နဲ့သာအထိရောက်ဆုံးရလဒ်ကိုရပါလိမ့်မယ်။
-
-တခြားနည်းလမ်းတွေကို သုံးမယ်ဆိုရင် Testosterone (ကျားဟော်မုန်း) ကို ဖိနှိမ်ဖို့ Anti-Androgen (ကျားဟော်မုန်းတားဆေး) နဲ့ တွဲသုံးဖို့ လိုအပ်ပါတယ်။
-
-ဆေးပမာဏ ချိန်ညှိဖို့အတွက် သွေးစစ်ဆေးမှု (Blood Test) ပြုလုပ်ရပါမည်။
-
-(ဒီတိုင်း standard ဆေးပမာဏသောက်ပြီး သွေးမစစ်ဘဲနေလို့ရပေမဲ့လူတစ်ဦးနဲ့တစ်ဦးက လက်ခံတုံ့ပြန်မှုမတူတာမလို့သွေးစစ်ပြီးကိုယ်နဲ့ကိုက်တဲ့ပမာဏကိုပြောင်းသုံးတာရေရှည်အတွက်ပိုပြီးအဆင်ပြေပါတယ်)
-
-[2] Anti-Androgen (ကျားဟော်မုန်းတားဆေး)
-ကတော့ Estrogen နှင့် တွဲပြီး အသုံးပြုရတဲ့ ဆေးဖြစ်ပါတယ်။
-
-• ဆေးပမာဏ: Androcur/Gale ဆေးတွေက အများအားဖြင့် 50mg ဆေးပြားတွေဖြစ်ကြပါတယ်။
-
-• သောက်သုံးရန် အညွှန်း: 50mg တစ်ပြားလုံးကို မသောက်ပါနဲ့။ ဆေးတစ်ပြားကို ၄ ပိုင်း တိတိကျကျ ပိုင်းပြီးတော့ နေ့စဉ် တစ်ပိုင်း 12.5mg နှုန်းနဲ့ သောက်ရပါမယ်။
-
-• အသုံးပြုနိုင်သော ဆေးအမည်များ:
-Androcur (AD German), Gale (မသေချာမရေရာတဲ့ အခြားဆေးတွေကို မသုံးပါနဲ့)။
-
-[3] Sublingual / Buccal (ငုံဆေး) အသုံးပြုနည်း
-ဒီနည်းလမ်းအတွက် Estrofem (2mg) ကို အသုံးပြုရပါမယ်။ (Progynova က သောက်ဆေးအတွက်ဘဲ ထုတ်လုပ်ထားခြင်းဖြစ်လို့ ငုံရတာ အဆင်မပြေပါ)။
-
-Sublingual/Buccal ပြုလုပ်ပါက Estrogen level ရုတ်တရက်ထိုးတက်သွားတတ်တာမလို့ ဥပမာ တစ်နေ့ 2mg ဆေးပြား သောက်မယ်ဆိုရင် အဲ့ 2mg ကို တစ်ဝက်ပိုင်းပြီး 1mg စီကို ၁၂ နာရီတစ်ကြိမ် သောက်ပေးရပါမယ်။ Anti-Androgen နှင့် မဖြစ်မနေ တွဲသုံးရပါမယ်။
-
-[ sublingual/buccal လုပ်နိုင်တဲ့ ဆေးအချိုးအစား ]
-
-- Anti-Androgen: 12.5mg (တစ်နေ့ ၁ ကြိမ်)
-- Estrofem: 2mg (Sublingual / Buccal)
-
-( သို့ )
-
-- Anti-Androgen: 12.5mg (တစ်နေ့ ၁ ကြိမ်)
-- Estrofem: 3mg (Sublingual / Buccal)
-
-( သို့ )
-
-- Anti-Androgen: 12.5mg (တစ်နေ့ ၁ ကြိမ်)
-- Estrofem: 4mg (Sublingual / Buccal)
-
-Hormone Levels မသိဘဲနဲ့ estrofem ကို 4mg ထက်ပိုမတက်ပါနဲ့
-
-[ ဆေးသောက်ချိန် အသေးစိတ် (Estrofem) ]
-
-Estrofem သောက်ရင် (Sublingual/Buccal)
-
-• 2 mg ဆိုရင် : ၁၂နာရီခြားတစ်ကြိမ် (1mg)စီ၊ တစ်နေ့ ၂ ကြိမ် သောက်ပါ။
-• 3mg ဆိုရင် : ၈ နာရီခြား တစ်ကြိမ် (1mg) စီ၊ တစ်နေ့ ၃ ကြိမ် သောက်ပါ။
-• 4mg သုံးစွဲလျှင်: ၈ နာရီခြား တစ်ကြိမ် သောက်ပါ။ ပထမ ၂ ကြိမ်တွင် (1mg) စီ၊ နောက်ဆုံးအကြိမ်တွင် (2mg) တန်းသောက်ပါ။
-
-[4] သွေးစစ်ဆေးမှုအပေါ်မူတည်ပြီး ဆေးပမာဏ ချိန်ညှိခြင်း
-
-သွေးစစ်ဆေးမှု ရလဒ် (Blood Test Results) မှာ Testosterone (ကျားဟော်မုန်း) Level ကလုံလောက်စွာ ကျဆင်းသွားပြီဆိုရင် Anti-Androgen (12.5mg) ကို နေ့စဉ်သောက်မဲ့အစား ၂ ရက်မှ ၁ ကြိမ် ကို လျှော့သောက်နိုင်ပါတယ်။
-
-Hormone ပမာဏအဆင်ပြေမပြေကို ကိုယ်သွေးစစ်တဲ့ ဆရာဝန်ကိုမေးလို့ရပါတယ်
-
-Target Hormone Level တွေက
-
-Estradiol (E2) : အနည်းဆုံး100 ကနေ 200 pg/mL (pg/mL ဆိုတာအတိုင်းအတာအခေါ်အဝေါ်ပါ)
-
-Testosterone : 50 ng/dL ( သို့မဟုတ် 1.7 nmol/L). ( ng/dL နဲ့ nmol/L ကလည်းအတိုင်းအတာအခေါ်အဝေါ်ပါ လက်မနဲ့ပေ လိုမျိုးကွာသွားတာ)
-
-သွေးစစ်ရင် Serum Estradiol (E2) နဲ့ Total Testosterone (T)တွေဘဲစစ်မယ်ပြောပြီး စစ်ပါ။မလိုတာတွေပါစစ်မိရင်ပိုက်ဆံပိုကုန်တာပေါ့
-
-သတိပြုရန် :
-သွေးစစ်ရင်ကိုယ်နောက်ဆေးမသောက်ခင်အချိန်နဲ့အနီးဆုံးအချိန်မှာကပ်စစ်ပါ။ဆေးသောက်ပြီးပြီးခြင်း သွေးစစ်တာမလုပ်ပါနဲ့။ sublingual/buccal ကြောင့် estrogen level မြင့်နေတာမလို့ hormone levels များနေတယ်ဆိုပြီးအထင်လွဲမှုတွေဖြစ်ကုန်မှာမလို့ပါ။
-
-[5] Personal Opinion များ
-
-Injection မလုပ်ရဲတာဖြစ်ဖြစ် / တစ်ခုခုကြောင့် injection လုပ်ဖို့မတတ်နိုင်ဘူးဆိုရင် oral သောက်မဲ့အစား sublingual/buccal ကပိုပြီးထိရောက်ပါတယ်။
-ဆေးသောက်ရမှာပျင်းပြီးမေ့တတ်ရင် နာရီနှိုးစက်ပေးထားပါ။
-
-T Blocker ( Anti-androgen ) လဲမသုံး။ ကိုယ့် Estrogen Level လဲမစစ်ဘဲ Estrogen ဘဲ သောက်ရင်ကိုယ့်ရဲ့ Testosterone က Estrogen ကိုပြန်ဖိမှာမလို့ ရေရှည်မှာ မိန်းမသားတစ်ယောက်ရဲ့ခန္ဓာကိုယ်မျိုးကိုရလာလိမ့်မှာမဟုတ်ပါဘူး။ ပြီးတော့အဲ့နည်းလမ်းက injection လုပ်မှဘဲထိရောက်တာပါ။
-
-T Blocker ( Anti-androgen) သုံးပြီး ကိုယ်ကလဲ Estrogen သောက်နေပေမဲ့ကိုယ်သောက်တဲ့ပမာဏနည်းနေရင်အရိုးနုသက်ဆိုင်တဲ့ပြဿနာတွေလာဖြစ်နိုင်တာမလို့ ပိုက်ဆံတတ်နိုင်ရင် estrofem 3mg-4mg လောက်သောက်စေချင်ပါတယ်။
-
-T Blocker ( Anti-androgen) သုံးရင် Vitamins B12 ဆေးလုံးလေးတွေ တစ်နေ့တစ်လုံးလောက်သောက်ပါ ( တစ်လုံးမှ ၁၀၀ ကျပ်ဘဲရှိပါတယ် )
-
-Estrofem နဲ့ Anti-androgen ကိုဈေးအသက်သာဆုံး https://t.me/sumflower245 မှာဝယ်ယူနိုင်ပါတယ် (not my shop lol, I'm just recommending a good supplier, she sell HRT supplies very cheap compared to others)
-
-မသိတာ/မရှင်းတာရှိရင် https://t.me/Needy_Stella ကိုလာမေးလို့ရပါတယ်`;
-
-        // 2. Formatting Engine: Turns your specific .txt format into beautiful HTML
+        // Formatting Engine: Converts your specific .txt format to HTML safely
         function parseTextToHTML(text) {
-            // Extract the main page title (second line after the disclaimer)
+            // Remove the title from the .txt body if it matches the header (optional cleanup)
             const lines = text.split('\n');
-            let mainTitle = "DIYHRT Guide";
-            if (lines.length > 2) {
-                mainTitle = lines[2].trim(); // Transfeminine များအတွက် HRT...
-                text = text.replace(mainTitle, `<h1 class="page-title">${mainTitle}</h1>`);
+            if(lines.length > 2 && lines[2].includes('Transfeminine')) {
+                text = text.replace(lines[2], ''); 
             }
 
             // Format Warning Disclaimer
-            text = text.replace(/⚠️(.*?)\n\n/s, '<div class="alert-box">⚠️ $1</div>\n\n');
+            text = text.replace(/⚠️(.*?)\n/g, '<div class="alert-box">⚠️ $1</div>');
 
             // Format Main Headings [1] Estrogen
-            text = text.replace(/^\[(\d+)\]\s*(.*)$/gm, '<h2 id="section-$1" class="section-title"><span class="step-num">$1</span> $2</h2>');
+            text = text.replace(/^\[(\d+)\]\s*(.*)$/gm, '<h2 class="section-title"><span class="step-num">$1</span> $2</h2>');
 
             // Format Sub Headings [ sublingual/buccal... ]
-            text = text.replace(/^\[\s*([^\]]+?)\s*\]$/gm, '<h3 class="sub-title">$1</h3>');
+            text = text.replace(/^\[\s*([^\]]+?)\s*\]$/gm, '<div class="sub-title">$1</div>');
 
             // Format Bullet Points (• or -)
             text = text.replace(/^[•\-]\s+(.*)$/gm, '<div class="list-item">$1</div>');
@@ -373,8 +277,9 @@ Estrofem နဲ့ Anti-androgen ကိုဈေးအသက်သာဆုံ�
 
             // Wrap regular text blocks in Paragraph tags
             let htmlChunks = text.split(/\n{2,}/).map(chunk => {
+                if (chunk.trim() === '') return '';
                 if (chunk.trim().startsWith('<') && !chunk.trim().startsWith('<strong') && !chunk.trim().startsWith('<a')) {
-                    return chunk; // Already HTML
+                    return chunk; // It's already parsed HTML
                 }
                 return `<p>${chunk.replace(/\n/g, '<br>')}</p>`;
             });
@@ -382,229 +287,59 @@ Estrofem နဲ့ Anti-androgen ကိုဈေးအသက်သာဆုံ�
             return htmlChunks.join('');
         }
 
-        // 3. Setup the Page Layout
-        function initializePage() {
-            const contentContainer = document.getElementById('content-container');
-            const tocContainer = document.getElementById('toc-container');
-
-            // Inject the parsed HTML
-            contentContainer.innerHTML = parseTextToHTML(rawGuideText);
-
-            // Generate the Table of Contents dynamically for the Drawer
-            const headings = contentContainer.querySelectorAll('h2.section-title');
-            
-            headings.forEach(heading => {
-                // Extract just the text without the number span
-                let labelText = heading.textContent.replace(/^\d+\s/, ''); 
-                
-                let link = document.createElement('a');
-                link.href = `#${heading.id}`;
-                link.className = 'menu-link';
-                link.textContent = labelText;
-                
-                // Add smooth scrolling click behavior
-                link.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    heading.scrollIntoView({ behavior: 'smooth' });
-                });
-
-                tocContainer.appendChild(link);
-            });
-        }
-
-        // Run when page loads
-        document.addEventListener('DOMContentLoaded', initializePage);
-    </script>
-</body>
-</html>
-            flex-shrink: 0;
-            overflow-y: auto;
-        }
-
-        .brand {
-            font-size: 1.25rem;
-            font-weight: bold;
-            color: var(--accent-yellow);
-            text-decoration: none;
-            display: block;
-            margin-bottom: 30px;
-            letter-spacing: 0.5px;
-        }
-
-        .category-header {
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            color: var(--text-muted);
-            margin: 24px 0 10px 0;
-            font-weight: bold;
-        }
-
-        .menu-link {
-            display: block;
-            color: var(--text-main);
-            text-decoration: none;
-            padding: 10px 14px;
-            border-radius: 8px;
-            margin-bottom: 6px;
-            font-size: 0.95rem;
-            transition: all 0.2s ease;
-            border: 1px solid transparent;
-        }
-
-        .menu-link:hover {
-            background-color: rgba(255, 255, 255, 0.03);
-            border-color: var(--border-color);
-            color: var(--accent-yellow);
-        }
-
-        .menu-link.active {
-            background-color: rgba(253, 224, 71, 0.08);
-            border-color: rgba(253, 224, 71, 0.2);
-            color: var(--accent-yellow);
-        }
-
-        /* Main view */
-        main {
-            flex-grow: 1;
-            padding: 40px;
-            max-width: 780px;
-            margin: 0 auto;
-            box-sizing: border-box;
-        }
-
-        .card {
-            background-color: var(--surface-color);
-            border: 1px solid var(--border-color);
-            border-radius: 14px;
-            padding: 30px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-        }
-
-        h1 {
-            color: var(--accent-yellow);
-            font-size: 1.4rem;
-            margin-top: 0;
-            margin-bottom: 24px;
-            line-height: 1.4;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 15px;
-        }
-
-        /* Raw Text formatting inside card */
-        pre {
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            font-family: inherit;
-            font-size: 1rem;
-            line-height: 1.7;
-            color: var(--text-main);
-            margin: 0;
-        }
-
-        .home-welcome {
-            text-align: center;
-            margin-top: 100px;
-        }
-
-        .home-welcome h2 {
-            color: var(--accent-yellow);
-            font-size: 2rem;
-            margin-bottom: 10px;
-        }
-
-        .home-welcome p {
-            color: var(--text-muted);
-        }
-
-        /* Mobile responsiveness */
-        @media (max-width: 768px) {
-            body {
-                flex-direction: column;
-            }
-            nav {
-                width: 100%;
-                border-right: none;
-                border-bottom: 1px solid var(--border-color);
-                padding: 20px;
-                max-height: 250px;
-            }
-            main {
-                padding: 20px;
-            }
-        }
-    </style>
-</head>
-<body>
-
-    <nav>
-        <a href="/" class="brand" onclick="goHome(event)">DIYHRT MM</a>
-
-        <div class="category-header">guide</div>
-        <a href="/guide/01" class="menu-link" onclick="loadTxt(event, 'guide', '01', 'Transfeminine များအတွက် HRT (Hormone Replacement Therapy) Sublingual/Buccal လမ်းညွှန်အကျဉ်း')">Transfeminine များအတွက် HRT Sublingual/Buccal လမ်းညွှန်အကျဉ်း</a>
-
-        <div class="category-header">about</div>
-        <!-- Add links here when you create more categories and text files -->
-    </nav>
-
-    <main>
-        <div id="home-view" class="home-welcome">
-            <h2>DIYHRT MM</h2>
-            <p>ဘယ်ဘက်မီနူးမှ လမ်းညွှန်စာမျက်နှာကို ရွေးချယ်ပါ</p>
-        </div>
-
-        <div id="content-view" style="display: none;">
-            <div class="card">
-                <h1 id="view-title"></h1>
-                <pre id="view-text">Loading...</pre>
-            </div>
-        </div>
-    </main>
-
-    <script>
-        async function loadTxt(event, category, fileId, title) {
+        // Core Function to fetch and load .txt files
+        async function loadPage(event, category, fileId, title) {
             if (event) event.preventDefault();
 
-            const homeView = document.getElementById('home-view');
-            const contentView = document.getElementById('content-view');
-            const viewTitle = document.getElementById('view-title');
-            const viewText = document.getElementById('view-text');
+            const homeWrapper = document.getElementById('home-content');
+            const txtWrapper = document.getElementById('txt-content-wrapper');
+            const txtContainer = document.getElementById('text-container');
+            const titleEl = document.getElementById('page-title');
 
-            homeView.style.display = 'none';
-            contentView.style.display = 'block';
-            viewTitle.textContent = title;
-            viewText.textContent = "ဖိုင်ကိုဖွင့်နေသည်...";
+            // Update UI State
+            homeWrapper.style.display = 'none';
+            txtWrapper.style.display = 'block';
+            titleEl.textContent = title;
+            txtContainer.innerHTML = "<p>Loading file...</p>";
             document.title = title + " - DIYHRT MM";
 
+            // Update URL without reloading
             window.history.pushState({category, fileId, title}, '', `/${category}/${fileId}`);
 
+            // Fetch the text file from the folder structure
             try {
                 const response = await fetch(`/txt/${category}/${fileId}.txt`);
-                if (!response.ok) throw new Error('File not found');
-                const data = await response.text();
-                viewText.textContent = data;
-            } catch (err) {
-                viewText.textContent = `ဖိုင်ကိုရှာမတွေ့ပါ (/txt/${category}/${fileId}.txt ဖိုင်ကိုထည့်သွင်းထားခြင်းရှိမရှိ စစ်ဆေးပါ)`;
+                if (!response.ok) throw new Error('File not found on server.');
+                
+                const rawText = await response.text();
+                // Pass the fetched text through the formatting engine
+                txtContainer.innerHTML = parseTextToHTML(rawText);
+                
+            } catch (error) {
+                txtContainer.innerHTML = `<div class="alert-box">Error: Could not load the text file. Please make sure <strong>/txt/${category}/${fileId}.txt</strong> exists on your server.</div>`;
             }
 
-            document.querySelectorAll('.menu-link').forEach(l => l.classList.remove('active'));
-            if (event && event.target) {
+            // Update active state in menu
+            document.querySelectorAll('.menu-link').forEach(link => link.classList.remove('active'));
+            if(event && event.target) {
                 event.target.classList.add('active');
             }
         }
 
+        // Return to home state
         function goHome(event) {
             if (event) event.preventDefault();
-            document.getElementById('home-view').style.display = 'block';
-            document.getElementById('content-view').style.display = 'none';
+            document.getElementById('home-content').style.display = 'block';
+            document.getElementById('txt-content-wrapper').style.display = 'none';
             document.title = "DIYHRT MM";
             window.history.pushState(null, '', '/');
-            document.querySelectorAll('.menu-link').forEach(l => l.classList.remove('active'));
+            document.querySelectorAll('.menu-link').forEach(link => link.classList.remove('active'));
         }
 
+        // Handle Browser Back/Forward buttons
         window.addEventListener('popstate', (event) => {
             if (event.state && event.state.category) {
-                loadTxt(null, event.state.category, event.state.fileId, event.state.title);
+                loadPage(null, event.state.category, event.state.fileId, event.state.title);
             } else {
                 goHome(null);
             }
