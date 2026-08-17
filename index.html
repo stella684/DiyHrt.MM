@@ -1,13 +1,20 @@
 <!DOCTYPE html>
 <html lang="my">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>DIYHRT MM</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Padauk:wght@400;700&display=swap" rel="stylesheet">
-    
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Padauk:wght@400;700&display=swap" rel="stylesheet" />
+
     <style>
+        /* ── Reset & Variables ── */
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
         :root {
             --bg: #0d1117;
             --surface: #161b22;
@@ -19,6 +26,8 @@
             --warning-bg: #4d3a00;
             --warning-text: #e3b341;
             --border: #30363d;
+            --radius: 8px;
+            --transition: 0.25s ease;
         }
 
         body {
@@ -37,12 +46,21 @@
             overflow: hidden;
         }
 
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: var(--bg); }
-        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--text-secondary); }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-secondary);
+        }
 
-        /* Mobile Header */
+        /* ── Header (mobile) ── */
         header {
             display: flex;
             align-items: center;
@@ -61,12 +79,17 @@
             background: none;
             border: none;
             color: var(--text-primary);
-            font-size: 24px;
+            font-size: 26px;
             cursor: pointer;
             margin-right: 16px;
-            padding: 0;
+            padding: 4px 6px;
             display: flex;
             align-items: center;
+            border-radius: 6px;
+            transition: background var(--transition);
+        }
+        .menu-btn:hover {
+            background: var(--surface-hover);
         }
 
         .brand-container {
@@ -78,14 +101,15 @@
         }
 
         .brand-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
+            width: 34px;
+            height: 34px;
+            border-radius: var(--radius);
             object-fit: cover;
             display: block;
+            background: var(--surface-hover);
+            /* fallback if image missing */
         }
 
-        /* Animated Title Effect */
         .brand-text {
             font-weight: 800;
             font-size: 1.4rem;
@@ -94,19 +118,459 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            color: transparent;
             display: inline-block;
             letter-spacing: -0.5px;
             animation: silverShine 4s ease infinite;
         }
 
         @keyframes silverShine {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
         }
 
-        /* Backdrop Overlay for Mobile Drawer */
+        /* ── Drawer Overlay ── */
+        .drawer-overlay {
+            position: fixed;
+            top: 60px;
+            left: 0;
+            width: 100vw;
+            height: calc(100vh - 60px);
+            background: rgba(0, 0, 0, 0.55);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            z-index: 899;
+        }
+        .drawer-overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* ── Side Navigation ── */
+        nav {
+            position: fixed;
+            top: 60px;
+            left: -300px;
+            width: 300px;
+            height: calc(100vh - 60px);
+            background-color: var(--surface);
+            border-right: 1px solid var(--border);
+            padding: 24px 20px;
+            box-sizing: border-box;
+            transition: left 0.3s ease;
+            z-index: 900;
+            overflow-y: auto;
+        }
+        nav.open {
+            left: 0;
+        }
+
+        .category-title {
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            margin: 22px 0 10px 0;
+            font-weight: 700;
+            letter-spacing: 1.8px;
+            opacity: 0.7;
+        }
+
+        nav a.menu-link {
+            display: block;
+            color: var(--text-primary);
+            text-decoration: none;
+            padding: 10px 14px;
+            border-radius: 6px;
+            margin-bottom: 4px;
+            transition: all var(--transition);
+            font-size: 0.95rem;
+            border: 1px solid transparent;
+            word-break: break-word;
+        }
+        nav a.menu-link:hover,
+        nav a.menu-link.active {
+            background-color: var(--surface-hover);
+            border-color: var(--border);
+            color: var(--accent-blue);
+            transform: translateX(4px);
+        }
+
+        /* ── Main ── */
+        main {
+            flex-grow: 1;
+            padding: 100px 20px 50px 20px;
+            max-width: 860px;
+            margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* ── Content styles ── */
+        .text-body p {
+            margin-bottom: 1.2rem;
+            color: #c9d1d9;
+        }
+        .alert-box {
+            background-color: var(--warning-bg);
+            color: var(--warning-text);
+            padding: 16px 20px;
+            border-radius: var(--radius);
+            border-left: 4px solid var(--warning-text);
+            margin-bottom: 25px;
+            font-weight: 600;
+        }
+        h1.page-title {
+            font-size: 2.2rem;
+            color: var(--text-primary);
+            margin: 0 0 32px 0;
+            line-height: 1.3;
+        }
+        h2.section-title {
+            color: var(--accent-blue);
+            margin: 40px 0 20px 0;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+            font-size: 1.6rem;
+        }
+        h3.sub-title {
+            color: var(--accent-pink);
+            margin: 30px 0 15px 0;
+            font-size: 1.2rem;
+        }
+        strong {
+            color: #ffffff;
+            font-weight: bold;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+        em {
+            color: var(--accent-pink);
+            font-style: italic;
+        }
+        .list-group {
+            margin-bottom: 20px;
+        }
+        .list-item {
+            margin-bottom: 6px;
+            padding-left: 22px;
+            position: relative;
+            color: #c9d1d9;
+        }
+        .list-item::before {
+            content: "•";
+            position: absolute;
+            left: 4px;
+            color: var(--accent-blue);
+            font-weight: bold;
+        }
+        a.external-link {
+            color: var(--accent-blue);
+            text-decoration: none;
+            border-bottom: 1px dotted var(--accent-blue);
+            transition: color 0.2s, border-color 0.2s;
+        }
+        a.external-link:hover {
+            color: var(--accent-pink);
+            border-bottom-color: var(--accent-pink);
+        }
+
+        .error-box {
+            padding: 20px;
+            background: rgba(255, 123, 114, 0.12);
+            border: 1px solid var(--accent-pink);
+            border-radius: var(--radius);
+            color: var(--accent-pink);
+        }
+        .error-box strong {
+            background: rgba(255, 123, 114, 0.2);
+            color: #ffb3a8;
+        }
+
+        /* ── Desktop Layout ── */
+        @media (min-width: 1024px) {
+            header {
+                display: none;
+            }
+            body {
+                flex-direction: row;
+            }
+            .drawer-overlay {
+                display: none !important;
+            }
+            nav {
+                left: 0;
+                top: 0;
+                position: sticky;
+                height: 100vh;
+                border-right: 1px solid var(--border);
+                width: 320px;
+                padding: 32px 24px;
+            }
+            .desktop-brand {
+                display: flex !important;
+                align-items: center;
+                gap: 14px;
+                margin-bottom: 36px;
+                cursor: pointer;
+                padding: 4px 0;
+            }
+            .desktop-brand .brand-icon {
+                width: 40px;
+                height: 40px;
+            }
+            .desktop-brand .brand-text {
+                font-size: 1.6rem;
+            }
+            main {
+                padding: 60px 50px 50px 50px;
+                margin-left: 0;
+            }
+        }
+
+        @media (max-width: 1023px) {
+            .desktop-brand {
+                display: none !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ─── Mobile Header ─── -->
+    <header>
+        <button class="menu-btn" id="menu-btn" aria-label="Toggle navigation" aria-expanded="false" onclick="toggleDrawer()">☰</button>
+        <div class="brand-container" onclick="goHome(event)">
+            <img src="1785483123152.png" alt="Icon" class="brand-icon" />
+            <span class="brand-text">DIYHRT MM</span>
+        </div>
+    </header>
+
+    <!-- ─── Overlay ─── -->
+    <div id="drawer-overlay" class="drawer-overlay" onclick="toggleDrawer(false)"></div>
+
+    <!-- ─── Side Navigation ─── -->
+    <nav id="drawer" aria-label="Sidebar Menu">
+        <div class="desktop-brand" onclick="goHome(event)">
+            <img src="1785483123152.png" alt="Icon" class="brand-icon" />
+            <span class="brand-text">DIYHRT MM</span>
+        </div>
+        <div id="dynamic-menu-container"></div>
+    </nav>
+
+    <!-- ─── Main Content ─── -->
+    <main>
+        <div id="home-content">
+            <h1 class="page-title" style="margin-top:0;">Welcome to DIYHRT MM</h1>
+            <p style="color: var(--text-secondary); font-size: 1.15rem;">Select a guide from the navigation menu to begin reading.</p>
+        </div>
+
+        <div id="txt-content-wrapper" style="display:none;">
+            <article id="text-container" class="text-body"></article>
+        </div>
+    </main>
+
+    <script>
+        // ─── CONFIG ──────────────────────────────────────────────────────────
+        // CHANGE THESE to match your actual file names and folders:
+        const MENU_FILE = 'menu.json'; // was 'main.json' — now fixed
+        const TXT_FOLDER = 'txt'; // was 'txt' — change to 'itxt' if needed
+
+        // ─── HELPERS ──────────────────────────────────────────────────────
+
+        function toggleDrawer(forceState) {
+            const drawer = document.getElementById('drawer');
+            const overlay = document.getElementById('drawer-overlay');
+            const isOpen = forceState !== undefined ? forceState : !drawer.classList.contains('open');
+
+            drawer.classList.toggle('open', isOpen);
+            if (overlay) overlay.classList.toggle('visible', isOpen);
+            document.body.classList.toggle('drawer-open', isOpen && window.innerWidth < 1024);
+        }
+
+        function closeDrawerOnMobile() {
+            if (window.innerWidth < 1024) toggleDrawer(false);
+        }
+
+        function goHome(event) {
+            if (event) event.preventDefault();
+            window.location.hash = '';
+        }
+
+        function highlightActiveLink() {
+            const current = window.location.hash;
+            document.querySelectorAll('.menu-link').forEach(link => {
+                link.classList.toggle('active', link.getAttribute('href') === current);
+            });
+        }
+
+        // ─── PARSER ──────────────────────────────────────────────────────
+
+        function parseMarkdownLite(text) {
+            // Preserve line breaks inside blocks
+            let html = text;
+
+            // custom [color] tags
+            html = html.replace(/\[color:([^\]]+)\](.*?)\[\/color\]/gi, '<span style="color:$1;">$2</span>');
+
+            // bold / italic
+            html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
+
+            // auto-link URLs (avoid wrapping in existing <a>)
+            html = html.replace(/(?<!["'])(https?:\/\/[^\s\)]+)/g,
+                '<a href="$1" class="external-link" target="_blank" rel="noopener noreferrer">$1</a>'
+            );
+
+            // split into blocks by double newline
+            const blocks = html.split(/\n{2,}/).map(b => b.trim()).filter(Boolean);
+
+            const parsed = blocks.map(block => {
+                // Alert
+                if (block.startsWith('⚠️')) {
+                    return `<div class="alert-box">${block.replace(/\n/g, '<br>')}</div>`;
+                }
+                // Headings
+                if (block.startsWith('### ')) return `<h3 class="sub-title">${block.slice(4)}</h3>`;
+                if (block.startsWith('## ')) return `<h2 class="section-title">${block.slice(3)}</h2>`;
+                if (block.startsWith('# ')) return `<h1 class="page-title">${block.slice(2)}</h1>`;
+
+                // Bullet lists
+                if (/^[•\-]\s/m.test(block)) {
+                    const items = block.split('\n').map(line => {
+                        if (/^[•\-]\s/.test(line)) {
+                            return `<div class="list-item">${line.replace(/^[•\-]\s+/, '')}</div>`;
+                        }
+                        return line;
+                    }).join('');
+                    return `<div class="list-group">${items}</div>`;
+                }
+
+                // Normal paragraph
+                return `<p>${block.replace(/\n/g, '<br>')}</p>`;
+            });
+
+            return parsed.join('\n\n');
+        }
+
+        // ─── FETCH MENU ──────────────────────────────────────────────────
+
+        async function fetchMenu() {
+            const container = document.getElementById('dynamic-menu-container');
+            try {
+                const res = await fetch(MENU_FILE);
+                if (!res.ok) throw new Error(`HTTP ${res.status} — file not found`);
+
+                const menuData = await res.json();
+                container.innerHTML = '';
+
+                menuData.forEach(section => {
+                    let html = `<div class="category-title">${section.category}</div>`;
+                    section.links.forEach(link => {
+                        // route: #/fileId
+                        html += `<a href="#/${link.fileId}" class="menu-link">${link.name}</a>`;
+                    });
+                    container.innerHTML += html;
+                });
+
+                highlightActiveLink();
+            } catch (err) {
+                console.error('Menu load error:', err);
+                container.innerHTML = `
+                    <div class="error-box">
+                        <strong>⚠️ Could not load menu.</strong><br>
+                        Tried to fetch <code>${MENU_FILE}</code>.<br>
+                        Make sure the file exists and you're running via a web server (not file://).
+                    </div>
+                `;
+            }
+        }
+
+        // ─── LOAD PAGE ──────────────────────────────────────────────────
+
+        async function loadPage(fileId) {
+            const home = document.getElementById('home-content');
+            const wrapper = document.getElementById('txt-content-wrapper');
+            const container = document.getElementById('text-container');
+
+            home.style.display = 'none';
+            wrapper.style.display = 'block';
+            container.innerHTML = '<p style="color:var(--text-secondary);">Loading document…</p>';
+
+            closeDrawerOnMobile();
+            highlightActiveLink();
+
+            try {
+                // ── CHANGE FOLDER HERE if needed ──
+                const path = `${TXT_FOLDER}/${fileId}.txt`;
+                const res = await fetch(path);
+                if (!res.ok) throw new Error(`HTTP ${res.status} — ${path} not found`);
+
+                const raw = await res.text();
+                // set page title from first heading
+                const titleMatch = raw.match(/^#\s+(.+)$/m);
+                document.title = titleMatch ? `${titleMatch[1]} — DIYHRT MM` : 'DIYHRT MM';
+
+                container.innerHTML = parseMarkdownLite(raw);
+            } catch (err) {
+                console.error('Page load error:', err);
+                container.innerHTML = `
+                    <div class="error-box">
+                        <strong>❌ Could not load document.</strong><br>
+                        Tried to fetch <code>${TXT_FOLDER}/${fileId}.txt</code>.<br>
+                        ${err.message}
+                    </div>
+                `;
+            }
+        }
+
+        function renderHome() {
+            document.getElementById('home-content').style.display = 'block';
+            document.getElementById('txt-content-wrapper').style.display = 'none';
+            document.getElementById('text-container').innerHTML = '';
+            document.title = 'DIYHRT MM';
+            highlightActiveLink();
+            closeDrawerOnMobile();
+        }
+
+        // ─── ROUTER ─────────────────────────────────────────────────────
+
+        function handleRoute() {
+            const hash = window.location.hash;
+            if (!hash || hash === '#' || hash === '#/') {
+                renderHome();
+                return;
+            }
+            const fileId = hash.replace(/^#\//, '').trim();
+            if (fileId) {
+                loadPage(fileId);
+            } else {
+                renderHome();
+            }
+        }
+
+        // ─── INIT ──────────────────────────────────────────────────────
+
+        window.addEventListener('hashchange', handleRoute);
+
+        window.addEventListener('DOMContentLoaded', () => {
+            fetchMenu();
+            handleRoute();
+        });
+
+        // ─── HANDLE RESIZE (desktop brand visibility) ──────────────
+        // (already handled via CSS)
+    </script>
+
+</body>
+</html        /* Backdrop Overlay for Mobile Drawer */
         .drawer-overlay {
             position: fixed;
             top: 60px;
