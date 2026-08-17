@@ -1,6 +1,6 @@
 window.PAGES = window.PAGES || {};
 window.PAGES['02'] = `
-[color:#e3b341]# ကုန်ကျမည့်ငွေပမာဏများ[/color]
+# ကုန်ကျမည့်ငွေပမာဏများ
 
 ## Estrogen ဆေးများ
 • estrofem 2mg 28 လုံး - 40000 MMK  
