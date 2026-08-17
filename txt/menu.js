@@ -1,9 +1,4 @@
-// This is your menu data
-window.MENU_DATA = [
-    {
-        "category": "Guide",
-        "links": [
-            { "fileId": "01", "name": "Transfeminine များအတွက် HRT (Hormone Replacement Therapy) Sublingual/Buccal လမ်းညွှန်အကျဉ်း" }
-        ]
-    }
+window.MENU = [
+    { category: "Guide", links: [ { fileId: "01", name: "Transfeminine များအတွက် HRT (Hormone Replacement Therapy) Sublingual/Buccal လမ်းညွှန်အကျဉ်း
+" } ] }
 ];
