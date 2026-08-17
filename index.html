@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Padauk:wght@400;700&display=swap" rel="stylesheet" />
 
     <style>
-        /* ── All styles exactly as before ── */
+        /* ── All your original styles ── */
         :root {
             --bg: #0d1117;
             --surface: #161b22;
@@ -184,9 +184,13 @@
             box-sizing: border-box;
         }
 
+        /* ─── Text content styles (with responsive tweaks) ─── */
         .text-body p {
             margin-bottom: 1.2rem;
             color: #c9d1d9;
+            /* responsive font size & line-height */
+            font-size: clamp(1rem, 2.5vw, 1.125rem);
+            line-height: 1.8;
         }
         .alert-box {
             background-color: var(--warning-bg);
@@ -196,9 +200,10 @@
             border-left: 4px solid var(--warning-text);
             margin-bottom: 25px;
             font-weight: 600;
+            font-size: clamp(0.95rem, 2.2vw, 1.05rem);
         }
         h1.page-title {
-            font-size: 2.2rem;
+            font-size: clamp(1.8rem, 5vw, 2.4rem);
             color: var(--text-primary);
             margin: 0 0 32px 0;
             line-height: 1.3;
@@ -208,12 +213,12 @@
             margin: 40px 0 20px 0;
             padding-bottom: 10px;
             border-bottom: 1px solid var(--border);
-            font-size: 1.6rem;
+            font-size: clamp(1.4rem, 4vw, 1.8rem);
         }
         h3.sub-title {
             color: var(--accent-pink);
             margin: 30px 0 15px 0;
-            font-size: 1.2rem;
+            font-size: clamp(1.15rem, 3.5vw, 1.4rem);
         }
         strong {
             color: #ffffff;
@@ -234,6 +239,8 @@
             padding-left: 22px;
             position: relative;
             color: #c9d1d9;
+            font-size: clamp(0.95rem, 2.5vw, 1.05rem);
+            line-height: 1.7;
         }
         .list-item::before {
             content: "•";
@@ -265,6 +272,7 @@
             color: #ffb3a8;
         }
 
+        /* ─── Desktop overrides ─── */
         @media (min-width: 1024px) {
             header { display: none; }
             body { flex-direction: row; }
@@ -301,6 +309,34 @@
 
         @media (max-width: 1023px) {
             .desktop-brand { display: none !important; }
+            /* adjust main padding on very small screens */
+            main {
+                padding: 90px 16px 40px 16px;
+            }
+        }
+
+        /* extra small screens */
+        @media (max-width: 480px) {
+            .text-body p {
+                font-size: 1rem;
+                line-height: 1.8;
+            }
+            h1.page-title {
+                font-size: 1.6rem;
+            }
+            h2.section-title {
+                font-size: 1.3rem;
+            }
+            h3.sub-title {
+                font-size: 1.1rem;
+            }
+            .list-item {
+                font-size: 0.95rem;
+            }
+            .alert-box {
+                font-size: 0.9rem;
+                padding: 14px 16px;
+            }
         }
     </style>
 </head>
@@ -406,7 +442,6 @@
             const container = document.getElementById('dynamic-menu-container');
             container.innerHTML = '';
 
-            // Use window.MENU (as defined in your menu.js)
             if (!window.MENU) {
                 container.innerHTML = `<div class="error-box">❌ Menu data not loaded. Make sure <strong>txt/menu.js</strong> exists and defines <strong>window.MENU</strong>.</div>`;
                 return;
