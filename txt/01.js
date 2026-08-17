@@ -1,3 +1,7 @@
+// This is the content for page "01"
+window.PAGES = window.PAGES || {};
+window.PAGES['01'] = `
+
 ⚠️ Disclaimer: This is a DIY harm reduction guide for educational purposes only, not medical advice. Always perform regular blood tests (E2 & T levels) to monitor your health.
 
 # Transfeminine များအတွက် HRT (Hormone Replacement Therapy) Sublingual/Buccal လမ်းညွှန်အကျဉ်း
@@ -189,3 +193,4 @@ https://t.me/sumflower245
 
 မသိတာ/မရှင်းတာရှိရင်
 https://t.me/@Needy_Stella ကိုလာမေးလို့ရပါတယ်
+`;
