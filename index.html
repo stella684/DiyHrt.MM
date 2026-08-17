@@ -80,12 +80,16 @@
             object-fit: cover;
         }
 
+        /* Fixed Gradient Text */
         .brand-text {
             font-weight: 800;
             font-size: 1.4rem;
             background: linear-gradient(90deg, var(--accent-blue), var(--accent-pink));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            background-clip: text;
+            color: transparent;
+            display: inline-block;
             letter-spacing: -0.5px;
         }
 
@@ -213,10 +217,7 @@
         </div>
 
         <div class="category-title">Guide</div>
-        <!-- 
-          Notice the href is the clean URL, and the second parameter in loadPage is the EXACT name of the text file without .txt 
-        -->
-        <a href="/transfeminine-hrt" class="menu-link" onclick="loadPage(event, 'transfeminine-hrt', 'Transfeminine HRT Sublingual/Buccal')">Transfeminine HRT Sublingual/Buccal</a>
+        <a href="/guide/01" class="menu-link" onclick="loadPage(event, 'guide', '01', 'Transfeminine HRT Sublingual/Buccal')">Transfeminine HRT Sublingual/Buccal</a>
     </nav>
 
     <main>
@@ -278,7 +279,8 @@
             return htmlBlocks.join('\n\n');
         }
 
-        async function loadPage(event, slug, menuTitle) {
+        // Fetch using category and file ID
+        async function loadPage(event, category, fileId, menuTitle) {
             if (event) event.preventDefault();
 
             // Hide home, show text container
@@ -289,24 +291,24 @@
             txtContainer.innerHTML = "<p>Loading file...</p>";
             document.title = menuTitle + " - DIYHRT MM";
 
-            // Push clean URL to address bar
-            window.history.pushState({slug, menuTitle}, '', `/${slug}`);
+            // Push URL dynamically (e.g. /guide/01)
+            window.history.pushState({category, fileId, menuTitle}, '', `/${category}/${fileId}`);
             closeDrawerOnMobile();
 
             // Set active class on menu link
             document.querySelectorAll('.menu-link').forEach(link => link.classList.remove('active'));
-            const activeLink = document.querySelector(`.menu-link[href="/${slug}"]`);
+            const activeLink = document.querySelector(`.menu-link[href="/${category}/${fileId}"]`);
             if (activeLink) activeLink.classList.add('active');
 
             try {
-                // Fetch the text file based on the slug
-                const response = await fetch(`/txt/${slug}.txt`);
+                // Fetch from the exact text folder path
+                const response = await fetch(`/txt/${category}/${fileId}.txt`);
                 if (!response.ok) throw new Error('File not found');
                 const rawText = await response.text();
                 
                 txtContainer.innerHTML = parseMarkdownLite(rawText);
             } catch (error) {
-                txtContainer.innerHTML = `<div class="alert-box">Error: Could not load <strong>/txt/${slug}.txt</strong></div>`;
+                txtContainer.innerHTML = `<div class="alert-box">Error: Could not load <strong>/txt/${category}/${fileId}.txt</strong></div>`;
             }
         }
 
@@ -322,8 +324,8 @@
 
         // Handle browser back/forward buttons
         window.addEventListener('popstate', (event) => {
-            if (event.state && event.state.slug) {
-                loadPage(null, event.state.slug, event.state.menuTitle);
+            if (event.state && event.state.category) {
+                loadPage(null, event.state.category, event.state.fileId, event.state.menuTitle);
             } else {
                 goHome(null);
             }
@@ -331,11 +333,13 @@
 
         // Handle direct linking / reloading on a specific page
         window.addEventListener('DOMContentLoaded', () => {
-            const currentPath = window.location.pathname.replace(/^\/|\/$/g, ''); // Removes leading/trailing slashes
-            if (currentPath && currentPath !== 'index.html') {
-                const targetLink = document.querySelector(`.menu-link[href="/${currentPath}"]`);
+            const pathSegments = window.location.pathname.replace(/^\/|\/$/g, '').split('/');
+            if (pathSegments.length === 2 && pathSegments[0] !== 'index.html') {
+                const category = pathSegments[0];
+                const fileId = pathSegments[1];
+                const targetLink = document.querySelector(`.menu-link[href="/${category}/${fileId}"]`);
                 const title = targetLink ? targetLink.textContent : "DIYHRT MM";
-                loadPage(null, currentPath, title);
+                loadPage(null, category, fileId, title);
             }
         });
     </script>
