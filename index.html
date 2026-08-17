@@ -245,174 +245,169 @@
     </main>
 
     <script>
-        // Check viewport on load for desktop branding
-        if (window.innerWidth >= 1024) {
-            const desktopBrand = document.querySelector('.desktop-brand');
-            if (desktopBrand) desktopBrand.style.display = 'flex';
-        }
+    // Desktop brand visibility
+    if (window.innerWidth >= 1024) {
+        const desktopBrand = document.querySelector('.desktop-brand');
+        if (desktopBrand) desktopBrand.style.display = 'flex';
+    }
 
-        // Toggle mobile drawer
-        function toggleDrawer(forceState) {
-            const drawer = document.getElementById('drawer');
-            const overlay = document.getElementById('drawer-overlay');
-            const btn = document.getElementById('menu-btn');
-            
-            const isOpen = forceState !== undefined ? forceState : !drawer.classList.contains('open');
-            
-            drawer.classList.toggle('open', isOpen);
-            if(overlay) overlay.classList.toggle('visible', isOpen);
-            document.body.classList.toggle('drawer-open', isOpen && window.innerWidth < 1024);
-            
-            if(btn) btn.setAttribute('aria-expanded', isOpen);
-        }
+    function toggleDrawer(forceState) {
+        const drawer = document.getElementById('drawer');
+        const overlay = document.getElementById('drawer-overlay');
+        const isOpen = forceState !== undefined ? forceState : !drawer.classList.contains('open');
+        
+        drawer.classList.toggle('open', isOpen);
+        if(overlay) overlay.classList.toggle('visible', isOpen);
+        document.body.classList.toggle('drawer-open', isOpen && window.innerWidth < 1024);
+    }
 
-        function closeDrawerOnMobile() {
-            if (window.innerWidth < 1024) {
-                toggleDrawer(false);
+    function closeDrawerOnMobile() {
+        if (window.innerWidth < 1024) {
+            toggleDrawer(false);
+        }
+    }
+
+    function parseMarkdownLite(text) {
+        text = text.replace(/\[color:([^\]]+)\](.*?)\[\/color\]/gi, '<span style="color: $1;">$2</span>');
+        text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        text = text.replace(/\*(.*?)\*/g, '<em>$1</em>');
+        text = text.replace(/(?<!["'])(https?:\/\/[^\s\)]+)/g, '<a href="$1" class="external-link" target="_blank" rel="noopener noreferrer">$1</a>');
+
+        let blocks = text.split(/\n{2,}/);
+        
+        let htmlBlocks = blocks.map(block => {
+            block = block.trim();
+            if (!block) return '';
+            if (block.startsWith('⚠️')) return `<div class="alert-box">${block.replace(/\n/g, '<br>')}</div>`;
+            if (block.startsWith('### ')) return `<h3 class="sub-title">${block.substring(4)}</h3>`;
+            if (block.startsWith('## ')) return `<h2 class="section-title">${block.substring(3)}</h2>`;
+            if (block.startsWith('# ')) return `<h1 class="page-title">${block.substring(2)}</h1>`;
+
+            if (block.match(/^[•\-]\s/m)) {
+                let listItems = block.split('\n').map(line => {
+                    if (line.match(/^[•\-]\s/)) return `<div class="list-item">${line.replace(/^[•\-]\s+/, '')}</div>`;
+                    return line;
+                }).join('');
+                return `<div class="list-group">${listItems}</div>`;
             }
-        }
-
-        // Simple Markdown Parser
-        function parseMarkdownLite(text) {
-            text = text.replace(/\[color:([^\]]+)\](.*?)\[\/color\]/gi, '<span style="color: $1;">$2</span>');
-            text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-            text = text.replace(/\*(.*?)\*/g, '<em>$1</em>');
-            text = text.replace(/(?<!["'])(https?:\/\/[^\s\)]+)/g, '<a href="$1" class="external-link" target="_blank" rel="noopener noreferrer">$1</a>');
-
-            let blocks = text.split(/\n{2,}/);
-            
-            let htmlBlocks = blocks.map(block => {
-                block = block.trim();
-                if (!block) return '';
-                if (block.startsWith('⚠️')) return `<div class="alert-box">${block.replace(/\n/g, '<br>')}</div>`;
-                if (block.startsWith('### ')) return `<h3 class="sub-title">${block.substring(4)}</h3>`;
-                if (block.startsWith('## ')) return `<h2 class="section-title">${block.substring(3)}</h2>`;
-                if (block.startsWith('# ')) return `<h1 class="page-title">${block.substring(2)}</h1>`;
-
-                if (block.match(/^[•\-]\s/m)) {
-                    let listItems = block.split('\n').map(line => {
-                        if (line.match(/^[•\-]\s/)) return `<div class="list-item">${line.replace(/^[•\-]\s+/, '')}</div>`;
-                        return line;
-                    }).join('');
-                    return `<div class="list-group">${listItems}</div>`;
-                }
-                return `<p>${block.replace(/\n/g, '<br>')}</p>`;
-            });
-
-            return htmlBlocks.join('\n\n');
-        }
-
-        // --- FETCH DYNAMIC MENU ---
-        async function fetchMenu() {
-            try {
-                // Ensure you are running a local server, otherwise this fetch will fail on 'file:///'
-                const res = await fetch('txt/menu.json');
-                if (!res.ok) throw new Error('Network response was not ok');
-                const menuData = await res.json();
-                const container = document.getElementById('dynamic-menu-container');
-                container.innerHTML = '';
-                
-                menuData.forEach(section => {
-                    let html = `<div class="category-title">${section.category}</div>`;
-                    section.links.forEach(link => {
-                        // Use Hash Routing to prevent 404s on refresh
-                        html += `<a href="#/${link.category}/${link.fileId}" class="menu-link">${link.name}</a>`;
-                    });
-                    container.innerHTML += html;
-                });
-
-                highlightActiveLink();
-            } catch (error) {
-                console.error("Could not load menu.json.", error);
-                document.getElementById('dynamic-menu-container').innerHTML = 
-                    `<div style="padding: 20px; color: var(--accent-pink); font-size: 0.9rem;">
-                     Error loading menu. Ensure you are viewing via a local or live web server.
-                     </div>`;
-            }
-        }
-
-        // --- PAGE LOADING LOGIC ---
-        async function loadPage(category, fileId) {
-            document.getElementById('home-content').style.display = 'none';
-            document.getElementById('txt-content-wrapper').style.display = 'block';
-            
-            const txtContainer = document.getElementById('text-container');
-            txtContainer.innerHTML = "<p>Loading document...</p>";
-            closeDrawerOnMobile();
-            highlightActiveLink();
-
-            try {
-                // Fetch using relative path
-                const response = await fetch(`txt/${category}/${fileId}.txt`);
-                if (!response.ok) throw new Error('File not found');
-                const rawText = await response.text();
-                
-                let docTitle = "DIYHRT MM";
-                const firstHeading = rawText.match(/^#\s+(.+)$/m);
-                if (firstHeading) {
-                    docTitle = firstHeading[1] + " - DIYHRT MM";
-                }
-                document.title = docTitle;
-                
-                txtContainer.innerHTML = parseMarkdownLite(rawText);
-            } catch (error) {
-                txtContainer.innerHTML = `<div class="alert-box">Error: Could not retrieve document <strong>txt/${category}/${fileId}.txt</strong></div>`;
-            }
-        }
-
-        // --- NAVIGATION CONTROLS ---
-        function goHome(event) {
-            if (event) event.preventDefault();
-            window.location.hash = ''; // Clear hash to return home
-        }
-
-        function renderHome() {
-            document.getElementById('home-content').style.display = 'block';
-            document.getElementById('txt-content-wrapper').style.display = 'none';
-            document.getElementById('text-container').innerHTML = ''; 
-            
-            document.title = "DIYHRT MM";
-            highlightActiveLink();
-            closeDrawerOnMobile();
-        }
-
-        function highlightActiveLink() {
-            const currentHash = window.location.hash;
-            document.querySelectorAll('.menu-link').forEach(link => {
-                link.classList.remove('active');
-                if (link.getAttribute('href') === currentHash) {
-                    link.classList.add('active');
-                }
-            });
-        }
-
-        // --- HASH ROUTER ---
-        function handleRoute() {
-            const hash = window.location.hash;
-            
-            // If there is no hash or it's just root, show homepage
-            if (!hash || hash === '#' || hash === '#/') {
-                renderHome();
-                return;
-            }
-
-            // Extract category and fileId from hash
-            const pathSegments = hash.replace(/^#\//, '').split('/');
-            if (pathSegments.length >= 2) {
-                loadPage(pathSegments[0], pathSegments[1]);
-            } else {
-                renderHome();
-            }
-        }
-
-        // Listen for back/forward buttons and clicks on menu links
-        window.addEventListener('hashchange', handleRoute);
-
-        // Initialize App on Load
-        window.addEventListener('DOMContentLoaded', () => {
-            fetchMenu(); 
-            handleRoute(); // Process URL to see if a file needs to load immediately
+            return `<p>${block.replace(/\n/g, '<br>')}</p>`;
         });
-    </script>
+
+        return htmlBlocks.join('\n\n');
+    }
+
+    // --- FETCH DYNAMIC MENU ---
+    async function fetchMenu() {
+        try {
+            // Fetching main.json from the root directory
+            const res = await fetch('main.json');
+            if (!res.ok) throw new Error('Network response was not ok');
+            const menuData = await res.json();
+            const container = document.getElementById('dynamic-menu-container');
+            container.innerHTML = '';
+            
+            menuData.forEach(section => {
+                let html = `<div class="category-title">${section.category}</div>`;
+                section.links.forEach(link => {
+                    // Hash route now only uses the fileId (e.g., #/01)
+                    html += `<a href="#/${link.fileId}" class="menu-link">${link.name}</a>`;
+                });
+                container.innerHTML += html;
+            });
+
+            highlightActiveLink();
+        } catch (error) {
+            console.error("Could not load main.json.", error);
+            document.getElementById('dynamic-menu-container').innerHTML = 
+                `<div style="padding: 20px; color: var(--accent-pink); font-size: 0.9rem;">
+                 Error loading main.json. Ensure you are viewing via a local or live web server.
+                 </div>`;
+        }
+    }
+
+    // --- PAGE LOADING LOGIC ---
+    async function loadPage(fileId) {
+        document.getElementById('home-content').style.display = 'none';
+        document.getElementById('txt-content-wrapper').style.display = 'block';
+        
+        const txtContainer = document.getElementById('text-container');
+        txtContainer.innerHTML = "<p>Loading document...</p>";
+        closeDrawerOnMobile();
+        highlightActiveLink();
+
+        try {
+            // Now fetches directly from the txt folder without subdirectories
+            const response = await fetch(`txt/${fileId}.txt`);
+            if (!response.ok) throw new Error('File not found');
+            const rawText = await response.text();
+            
+            let docTitle = "DIYHRT MM";
+            const firstHeading = rawText.match(/^#\s+(.+)$/m);
+            if (firstHeading) {
+                docTitle = firstHeading[1] + " - DIYHRT MM";
+            }
+            document.title = docTitle;
+            
+            txtContainer.innerHTML = parseMarkdownLite(rawText);
+        } catch (error) {
+            txtContainer.innerHTML = `<div class="alert-box">Error: Could not retrieve document <strong>txt/${fileId}.txt</strong></div>`;
+        }
+    }
+
+    // --- NAVIGATION CONTROLS ---
+    function goHome(event) {
+        if (event) event.preventDefault();
+        window.location.hash = ''; // Clear hash to return home
+    }
+
+    function renderHome() {
+        document.getElementById('home-content').style.display = 'block';
+        document.getElementById('txt-content-wrapper').style.display = 'none';
+        document.getElementById('text-container').innerHTML = ''; 
+        
+        document.title = "DIYHRT MM";
+        highlightActiveLink();
+        closeDrawerOnMobile();
+    }
+
+    function highlightActiveLink() {
+        const currentHash = window.location.hash;
+        document.querySelectorAll('.menu-link').forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href') === currentHash) {
+                link.classList.add('active');
+            }
+        });
+    }
+
+    // --- HASH ROUTER ---
+    function handleRoute() {
+        const hash = window.location.hash;
+        
+        // If there is no hash or it's just root, show homepage
+        if (!hash || hash === '#' || hash === '#/') {
+            renderHome();
+            return;
+        }
+
+        // Extract just the fileId from hash (e.g., #/01 becomes 01)
+        const fileId = hash.replace(/^#\//, '');
+        if (fileId) {
+            loadPage(fileId);
+        } else {
+            renderHome();
+        }
+    }
+
+    // Listen for back/forward buttons and clicks on menu links
+    window.addEventListener('hashchange', handleRoute);
+
+    // Initialize App on Load
+    window.addEventListener('DOMContentLoaded', () => {
+        fetchMenu(); 
+        handleRoute(); // Process URL to see if a file needs to load immediately
+    });
+</script>
+            
 </body>
 </html>
