@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Padauk:wght@400;700&display=swap" rel="stylesheet" />
 
     <style>
-        /* (all styles same as before – keep them) */
+        /* ── All styles exactly as before ── */
         :root {
             --bg: #0d1117;
             --surface: #161b22;
@@ -339,38 +339,13 @@
         </div>
     </main>
 
+    <!-- ─── LOAD YOUR SEPARATE FILES AS SCRIPTS (NO SERVER) ─── -->
+    <script src="txt/menu.js"></script>
+    <script src="txt/01.js"></script>
+    <!-- Add more pages here: <script src="txt/02.js"></script> -->
+
     <script>
-        // ─── EMBEDDED DATA (no fetch needed) ────────────────────────────
-
-        // 1. Menu data – copy your menu.json content here
-        const menuData = [
-            {
-                "category": "Guide",
-                "links": [
-                    { "fileId": "01", "name": "Transfeminine များအတွက် HRT (Hormone Replacement Therapy) Sublingual/Buccal လမ်းညွှန်အကျဉ်း" }
-                ]
-            }
-        ];
-
-        // 2. Content data – paste each .txt file content here, keyed by fileId
-        const contentData = {
-            "01": `# Transfeminine များအတွက် HRT (Hormone Replacement Therapy) Sublingual/Buccal လမ်းညွှန်အကျဉ်း
-
-## အကြောင်းအရာ
-ဤလမ်းညွှန်သည် ...
-
-⚠️ သတိပြုရန် - ဤအချက်အလက်များသည် ဆေးဘက်ဆိုင်ရာ အကြံပြုချက်မဟုတ်ပါ။
-
-## ဆေးဝါးများ
-- **Estradiol** – ...
-- **Anti‑androgen** – ...
-
-[color:#ff7b72]အရေးကြီး[/color] – ဆရာဝန်နှင့် တိုင်ပင်ပါ။
-`
-            // Add more entries as needed: "02": "content of 02.txt", etc.
-        };
-
-        // ─── REST OF THE LOGIC (no changes needed) ──────────────────────
+        // ─── ALL LOGIC (uses window.MENU_DATA and window.PAGES) ────────
 
         function toggleDrawer(forceState) {
             const drawer = document.getElementById('drawer');
@@ -430,7 +405,13 @@
         function buildMenu() {
             const container = document.getElementById('dynamic-menu-container');
             container.innerHTML = '';
-            menuData.forEach(section => {
+
+            if (!window.MENU_DATA) {
+                container.innerHTML = `<div class="error-box">❌ Menu data not loaded. Make sure <strong>txt/menu.js</strong> exists and is valid.</div>`;
+                return;
+            }
+
+            window.MENU_DATA.forEach(section => {
                 let html = `<div class="category-title">${section.category}</div>`;
                 section.links.forEach(link => {
                     html += `<a href="#/${link.fileId}" class="menu-link">${link.name}</a>`;
@@ -448,13 +429,12 @@
             home.style.display = 'none';
             wrapper.style.display = 'block';
 
-            const content = contentData[fileId];
-            if (!content) {
-                container.innerHTML = `<div class="error-box">❌ Content for fileId <strong>${fileId}</strong> not found in embedded data.</div>`;
+            if (!window.PAGES || !window.PAGES[fileId]) {
+                container.innerHTML = `<div class="error-box">❌ Content for fileId <strong>${fileId}</strong> not found. Make sure <strong>txt/${fileId}.js</strong> exists.</div>`;
                 return;
             }
 
-            // set title
+            const content = window.PAGES[fileId];
             const titleMatch = content.match(/^#\s+(.+)$/m);
             document.title = titleMatch ? `${titleMatch[1]} — DIYHRT MM` : 'DIYHRT MM';
 
