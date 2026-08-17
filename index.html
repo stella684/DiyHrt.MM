@@ -80,17 +80,27 @@
             object-fit: cover;
         }
 
-        /* Fixed Gradient Text */
+        /* 
+         * MOVING WHITE & SILVER GRADIENT ANIMATION 
+         */
         .brand-text {
             font-weight: 800;
             font-size: 1.4rem;
-            background: linear-gradient(90deg, var(--accent-blue), var(--accent-pink));
+            background: linear-gradient(270deg, #ffffff, #8b949e, #ffffff, #e6edf3);
+            background-size: 300% 300%;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             color: transparent;
             display: inline-block;
             letter-spacing: -0.5px;
+            animation: silverShine 4s ease infinite;
+        }
+
+        @keyframes silverShine {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         /* Navigation Drawer */
@@ -221,13 +231,15 @@
     </nav>
 
     <main>
+        <!-- The Home Container -->
         <div id="home-content">
             <h1 class="page-title" style="margin-top:0;">Welcome to DIYHRT MM</h1>
             <p style="color: var(--text-secondary); font-size: 1.1rem;">Select the guide from the menu to read.</p>
         </div>
 
+        <!-- The Text Reader Container -->
         <div id="txt-content-wrapper" style="display:none;">
-            <div id="text-container" class="text-body">Loading...</div>
+            <div id="text-container" class="text-body"></div>
         </div>
     </main>
 
@@ -279,11 +291,11 @@
             return htmlBlocks.join('\n\n');
         }
 
-        // Fetch using category and file ID
+        // Load page function with strict visibility enforcement
         async function loadPage(event, category, fileId, menuTitle) {
             if (event) event.preventDefault();
 
-            // Hide home, show text container
+            // 1. Force the home view to hide and text wrapper to show
             document.getElementById('home-content').style.display = 'none';
             document.getElementById('txt-content-wrapper').style.display = 'block';
             
@@ -291,17 +303,17 @@
             txtContainer.innerHTML = "<p>Loading file...</p>";
             document.title = menuTitle + " - DIYHRT MM";
 
-            // Push URL dynamically (e.g. /guide/01)
+            // 2. Manage the URL state
             window.history.pushState({category, fileId, menuTitle}, '', `/${category}/${fileId}`);
             closeDrawerOnMobile();
 
-            // Set active class on menu link
+            // 3. Highlight the active link in the menu
             document.querySelectorAll('.menu-link').forEach(link => link.classList.remove('active'));
             const activeLink = document.querySelector(`.menu-link[href="/${category}/${fileId}"]`);
             if (activeLink) activeLink.classList.add('active');
 
+            // 4. Fetch the text
             try {
-                // Fetch from the exact text folder path
                 const response = await fetch(`/txt/${category}/${fileId}.txt`);
                 if (!response.ok) throw new Error('File not found');
                 const rawText = await response.text();
@@ -312,12 +324,19 @@
             }
         }
 
+        // Return to home page function with strict visibility enforcement
         function goHome(event) {
             if (event) event.preventDefault();
+            
+            // Strictly hide text and show home
             document.getElementById('home-content').style.display = 'block';
             document.getElementById('txt-content-wrapper').style.display = 'none';
+            document.getElementById('text-container').innerHTML = ''; // Clear text
+            
             document.title = "DIYHRT MM";
             window.history.pushState(null, '', '/');
+            
+            // Remove active states from menu
             document.querySelectorAll('.menu-link').forEach(link => link.classList.remove('active'));
             closeDrawerOnMobile();
         }
@@ -331,15 +350,23 @@
             }
         });
 
-        // Handle direct linking / reloading on a specific page
+        // Initialize correctly on page load
         window.addEventListener('DOMContentLoaded', () => {
-            const pathSegments = window.location.pathname.replace(/^\/|\/$/g, '').split('/');
-            if (pathSegments.length === 2 && pathSegments[0] !== 'index.html') {
-                const category = pathSegments[0];
-                const fileId = pathSegments[1];
-                const targetLink = document.querySelector(`.menu-link[href="/${category}/${fileId}"]`);
-                const title = targetLink ? targetLink.textContent : "DIYHRT MM";
-                loadPage(null, category, fileId, title);
+            const currentPath = window.location.pathname;
+            
+            // If we are at the root domain, force the Home view
+            if (currentPath === '/' || currentPath === '/index.html') {
+                goHome(null);
+            } else {
+                // If we are deep-linked (e.g., domain.com/guide/01), load the text
+                const pathSegments = currentPath.replace(/^\/|\/$/g, '').split('/');
+                if (pathSegments.length >= 2) {
+                    const category = pathSegments[0];
+                    const fileId = pathSegments[1];
+                    const targetLink = document.querySelector(`.menu-link[href="/${category}/${fileId}"]`);
+                    const title = targetLink ? targetLink.textContent : "DIYHRT MM";
+                    loadPage(null, category, fileId, title);
+                }
             }
         });
     </script>
