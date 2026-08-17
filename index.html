@@ -33,12 +33,16 @@
             overflow-x: hidden;
         }
 
+        body.drawer-open {
+            overflow: hidden;
+        }
+
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: var(--bg); }
         ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--text-secondary); }
 
-        /* Top Header (Mobile) */
+        /* Mobile Header */
         header {
             display: flex;
             align-items: center;
@@ -78,10 +82,10 @@
             height: 32px;
             border-radius: 8px;
             object-fit: cover;
-            display: block; /* Forces image to render */
+            display: block;
         }
 
-        /* MOVING WHITE & SILVER TITLE */
+        /* Animated Title Effect */
         .brand-text {
             font-weight: 800;
             font-size: 1.4rem;
@@ -100,6 +104,25 @@
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
+        }
+
+        /* Backdrop Overlay for Mobile Drawer */
+        .drawer-overlay {
+            position: fixed;
+            top: 60px;
+            left: 0;
+            width: 100vw;
+            height: calc(100vh - 60px);
+            background: rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+            z-index: 899;
+        }
+
+        .drawer-overlay.visible {
+            opacity: 1;
+            visibility: visible;
         }
 
         /* Navigation Drawer */
@@ -150,7 +173,7 @@
             transform: translateX(4px);
         }
 
-        /* Main Content */
+        /* Main Layout */
         main {
             flex-grow: 1;
             padding: 100px 20px 50px 20px; 
@@ -160,7 +183,7 @@
             box-sizing: border-box;
         }
 
-        /* Generated Text Styling */
+        /* Parsed Text & Content Styles */
         .text-body p { margin-bottom: 1.2rem; color: #c9d1d9; }
         .alert-box { background-color: var(--warning-bg); color: var(--warning-text); padding: 16px 20px; border-radius: 8px; border-left: 4px solid var(--warning-text); margin-bottom: 25px; font-weight: 600; }
         h1.page-title { font-size: 2.2rem; color: var(--text-primary); margin: 0 0 40px 0; line-height: 1.3; }
@@ -174,13 +197,14 @@
         a.external-link { color: var(--accent-blue); text-decoration: none; border-bottom: 1px dotted var(--accent-blue); transition: color 0.2s; }
         a.external-link:hover { color: var(--accent-pink); border-bottom-color: var(--accent-pink); }
 
-        /* Desktop Adjustments */
+        /* Desktop Layout Adjustments */
         @media (min-width: 1024px) {
             header { display: none; }
             body { flex-direction: row; }
+            .drawer-overlay { display: none; }
             nav { left: 0; top: 0; position: sticky; height: 100vh; border-right: 1px solid var(--border); } 
             .desktop-brand { display: flex; align-items: center; gap: 12px; margin-bottom: 30px; cursor: pointer; }
-            main { padding: 50px; padding-left: 50px; } 
+            main { padding: 50px; } 
         }
     </style>
 </head>
@@ -188,58 +212,72 @@
 
     <!-- Mobile Header -->
     <header>
-        <button class="menu-btn" onclick="toggleDrawer()">☰</button>
+        <button class="menu-btn" id="menu-btn" aria-label="Toggle navigation menu" aria-expanded="false" onclick="toggleDrawer()">☰</button>
         <div class="brand-container" onclick="goHome(event)">
             <img src="1785483123152.png" alt="Icon" class="brand-icon">
             <span class="brand-text">DIYHRT MM</span>
         </div>
     </header>
 
-    <!-- Side Navigation (Now completely empty and dynamic) -->
-    <nav id="drawer">
+    <!-- Overlay Backdrop for Mobile -->
+    <div id="drawer-overlay" class="drawer-overlay" onclick="toggleDrawer(false)"></div>
+
+    <!-- Side Navigation -->
+    <nav id="drawer" aria-label="Sidebar Menu">
         <div class="desktop-brand" onclick="goHome(event)" style="display: none;">
             <img src="1785483123152.png" alt="Icon" class="brand-icon">
             <span class="brand-text">DIYHRT MM</span>
         </div>
         
-        <!-- Javascript will inject the menu links here automatically -->
         <div id="dynamic-menu-container"></div>
     </nav>
 
+    <!-- Main Content Area -->
     <main>
-        <!-- The Home Container -->
         <div id="home-content">
             <h1 class="page-title" style="margin-top:0;">Welcome to DIYHRT MM</h1>
-            <p style="color: var(--text-secondary); font-size: 1.1rem;">Select a guide from the menu to read.</p>
+            <p style="color: var(--text-secondary); font-size: 1.1rem;">Select a guide from the navigation menu to begin reading.</p>
         </div>
 
-        <!-- The Text Reader Container -->
         <div id="txt-content-wrapper" style="display:none;">
-            <div id="text-container" class="text-body"></div>
+            <article id="text-container" class="text-body"></article>
         </div>
     </main>
 
     <script>
-        // Unhide desktop brand logic
+        // Check viewport on load for desktop branding
         if (window.innerWidth >= 1024) {
-            document.querySelector('.desktop-brand').style.display = 'flex';
+            const desktopBrand = document.querySelector('.desktop-brand');
+            if (desktopBrand) desktopBrand.style.display = 'flex';
         }
 
-        function toggleDrawer() {
-            document.getElementById('drawer').classList.toggle('open');
+        // Toggle mobile drawer
+        function toggleDrawer(forceState) {
+            const drawer = document.getElementById('drawer');
+            const overlay = document.getElementById('drawer-overlay');
+            const btn = document.getElementById('menu-btn');
+            
+            const isOpen = forceState !== undefined ? forceState : !drawer.classList.contains('open');
+            
+            drawer.classList.toggle('open', isOpen);
+            if(overlay) overlay.classList.toggle('visible', isOpen);
+            document.body.classList.toggle('drawer-open', isOpen && window.innerWidth < 1024);
+            
+            if(btn) btn.setAttribute('aria-expanded', isOpen);
         }
 
         function closeDrawerOnMobile() {
             if (window.innerWidth < 1024) {
-                document.getElementById('drawer').classList.remove('open');
+                toggleDrawer(false);
             }
         }
 
+        // Simple Markdown Parser
         function parseMarkdownLite(text) {
             text = text.replace(/\[color:([^\]]+)\](.*?)\[\/color\]/gi, '<span style="color: $1;">$2</span>');
             text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
             text = text.replace(/\*(.*?)\*/g, '<em>$1</em>');
-            text = text.replace(/(?<!["'])(https?:\/\/[^\s\)]+)/g, '<a href="$1" class="external-link" target="_blank">$1</a>');
+            text = text.replace(/(?<!["'])(https?:\/\/[^\s\)]+)/g, '<a href="$1" class="external-link" target="_blank" rel="noopener noreferrer">$1</a>');
 
             let blocks = text.split(/\n{2,}/);
             
@@ -267,53 +305,48 @@
         // --- FETCH DYNAMIC MENU ---
         async function fetchMenu() {
             try {
-                const res = await fetch('/txt/menu.json');
+                // Ensure you are running a local server, otherwise this fetch will fail on 'file:///'
+                const res = await fetch('txt/menu.json');
+                if (!res.ok) throw new Error('Network response was not ok');
                 const menuData = await res.json();
                 const container = document.getElementById('dynamic-menu-container');
+                container.innerHTML = '';
                 
                 menuData.forEach(section => {
                     let html = `<div class="category-title">${section.category}</div>`;
                     section.links.forEach(link => {
-                        html += `<a href="/${link.category}/${link.fileId}" class="menu-link" onclick="handleMenuClick(event, '${link.category}', '${link.fileId}')">${link.name}</a>`;
+                        // Use Hash Routing to prevent 404s on refresh
+                        html += `<a href="#/${link.category}/${link.fileId}" class="menu-link">${link.name}</a>`;
                     });
                     container.innerHTML += html;
                 });
 
-                // Highlight active link if we are already on a page
                 highlightActiveLink();
             } catch (error) {
-                console.error("Could not load menu.json. Please create /txt/menu.json", error);
+                console.error("Could not load menu.json.", error);
+                document.getElementById('dynamic-menu-container').innerHTML = 
+                    `<div style="padding: 20px; color: var(--accent-pink); font-size: 0.9rem;">
+                     Error loading menu. Ensure you are viewing via a local or live web server.
+                     </div>`;
             }
         }
 
-        // --- HANDLE CLICKS AND DYNAMIC FILE LOADING ---
-        async function handleMenuClick(event, category, fileId) {
-            if (event) event.preventDefault();
-            loadPage(category, fileId, true);
-        }
-
-        async function loadPage(category, fileId, pushState = false) {
-            // Force visibility states instantly
+        // --- PAGE LOADING LOGIC ---
+        async function loadPage(category, fileId) {
             document.getElementById('home-content').style.display = 'none';
             document.getElementById('txt-content-wrapper').style.display = 'block';
             
             const txtContainer = document.getElementById('text-container');
-            txtContainer.innerHTML = "<p>Loading file...</p>";
+            txtContainer.innerHTML = "<p>Loading document...</p>";
             closeDrawerOnMobile();
-
-            if (pushState) {
-                window.history.pushState({category, fileId}, '', `/${category}/${fileId}`);
-            }
-
             highlightActiveLink();
 
-            // Auto-fetch the exact .txt file based on the URL
             try {
-                const response = await fetch(`/txt/${category}/${fileId}.txt`);
+                // Fetch using relative path
+                const response = await fetch(`txt/${category}/${fileId}.txt`);
                 if (!response.ok) throw new Error('File not found');
                 const rawText = await response.text();
                 
-                // DYNAMIC TITLE: Finds the first "# Heading" in your .txt and uses it as the tab title!
                 let docTitle = "DIYHRT MM";
                 const firstHeading = rawText.match(/^#\s+(.+)$/m);
                 if (firstHeading) {
@@ -323,53 +356,62 @@
                 
                 txtContainer.innerHTML = parseMarkdownLite(rawText);
             } catch (error) {
-                txtContainer.innerHTML = `<div class="alert-box">Error: Could not load <strong>/txt/${category}/${fileId}.txt</strong></div>`;
+                txtContainer.innerHTML = `<div class="alert-box">Error: Could not retrieve document <strong>txt/${category}/${fileId}.txt</strong></div>`;
             }
         }
 
-        function highlightActiveLink() {
-            const currentPath = window.location.pathname;
-            document.querySelectorAll('.menu-link').forEach(link => {
-                link.classList.remove('active');
-                if (link.getAttribute('href') === currentPath) {
-                    link.classList.add('active');
-                }
-            });
-        }
-
+        // --- NAVIGATION CONTROLS ---
         function goHome(event) {
             if (event) event.preventDefault();
+            window.location.hash = ''; // Clear hash to return home
+        }
+
+        function renderHome() {
             document.getElementById('home-content').style.display = 'block';
             document.getElementById('txt-content-wrapper').style.display = 'none';
             document.getElementById('text-container').innerHTML = ''; 
             
             document.title = "DIYHRT MM";
-            window.history.pushState(null, '', '/');
             highlightActiveLink();
             closeDrawerOnMobile();
         }
 
-        window.addEventListener('popstate', (event) => {
-            if (event.state && event.state.category) {
-                loadPage(event.state.category, event.state.fileId, false);
-            } else {
-                goHome(null);
-            }
-        });
-
-        // Initialize App
-        window.addEventListener('DOMContentLoaded', () => {
-            fetchMenu(); // Generate the sidebar
-            
-            const currentPath = window.location.pathname;
-            if (currentPath === '/' || currentPath === '/index.html') {
-                goHome(null);
-            } else {
-                const pathSegments = currentPath.replace(/^\/|\/$/g, '').split('/');
-                if (pathSegments.length >= 2) {
-                    loadPage(pathSegments[0], pathSegments[1], false);
+        function highlightActiveLink() {
+            const currentHash = window.location.hash;
+            document.querySelectorAll('.menu-link').forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === currentHash) {
+                    link.classList.add('active');
                 }
+            });
+        }
+
+        // --- HASH ROUTER ---
+        function handleRoute() {
+            const hash = window.location.hash;
+            
+            // If there is no hash or it's just root, show homepage
+            if (!hash || hash === '#' || hash === '#/') {
+                renderHome();
+                return;
             }
+
+            // Extract category and fileId from hash
+            const pathSegments = hash.replace(/^#\//, '').split('/');
+            if (pathSegments.length >= 2) {
+                loadPage(pathSegments[0], pathSegments[1]);
+            } else {
+                renderHome();
+            }
+        }
+
+        // Listen for back/forward buttons and clicks on menu links
+        window.addEventListener('hashchange', handleRoute);
+
+        // Initialize App on Load
+        window.addEventListener('DOMContentLoaded', () => {
+            fetchMenu(); 
+            handleRoute(); // Process URL to see if a file needs to load immediately
         });
     </script>
 </body>
