@@ -5,19 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DIYHRT MM</title>
     
-    <!-- Modern fonts for better readability -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Padauk:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            /* Sleek Dark Mode Palette */
             --bg: #0d1117;
             --surface: #161b22;
             --surface-hover: #21262d;
             --text-primary: #e6edf3;
             --text-secondary: #8b949e;
-            
-            /* Thematic Accents (Pastel Blue & Pink) */
             --accent-blue: #58a6ff;
             --accent-pink: #ff7b72;
             --warning-bg: #4d3a00;
@@ -36,13 +32,11 @@
             overflow-x: hidden;
         }
 
-        /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: var(--bg); }
         ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--text-secondary); }
 
-        /* Sidebar Navigation */
         nav {
             width: 300px;
             background-color: var(--surface);
@@ -111,7 +105,6 @@
             transform: translateX(4px);
         }
 
-        /* Main Content Area */
         main {
             flex-grow: 1;
             padding: 50px;
@@ -119,103 +112,46 @@
             margin: 0 auto;
         }
 
-        #home-content { display: block; animation: fadeIn 0.4s ease-out; }
-        #txt-content-wrapper { display: none; animation: fadeIn 0.4s ease-out; }
-
+        #home-content, #txt-content-wrapper { animation: fadeIn 0.4s ease-out; }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Rendered Text Styling applied to fetched .txt files */
+        /* Generated Text Styling */
+        .text-body p { margin-bottom: 1.2rem; color: #c9d1d9; }
+        
         .alert-box {
             background-color: var(--warning-bg);
             color: var(--warning-text);
             padding: 16px 20px;
             border-radius: 8px;
             border-left: 4px solid var(--warning-text);
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             font-weight: 600;
         }
 
-        #page-title {
-            font-size: 2.2rem;
-            color: var(--text-primary);
-            margin-bottom: 40px;
-            line-height: 1.3;
-            margin-top: 0;
-        }
+        /* Headings */
+        h1.page-title { font-size: 2.2rem; color: var(--text-primary); margin: 0 0 40px 0; line-height: 1.3; }
+        h2.section-title { color: var(--accent-blue); margin: 40px 0 20px 0; padding-bottom: 10px; border-bottom: 1px solid var(--border); font-size: 1.6rem; }
+        h3.sub-title { color: var(--accent-pink); margin: 30px 0 15px 0; font-size: 1.2rem; }
 
-        .section-title {
-            color: var(--accent-blue);
-            margin-top: 50px;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid var(--border);
-            font-size: 1.5rem;
-        }
+        /* Text Formatting */
+        strong { color: #ffffff; font-weight: bold; background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px; }
+        em { color: var(--accent-pink); font-style: italic; }
+        
+        .list-group { margin-bottom: 20px; }
+        .list-item { margin-bottom: 8px; padding-left: 20px; position: relative; color: #c9d1d9; }
+        .list-item::before { content: "•"; position: absolute; left: 0; color: var(--accent-blue); font-weight: bold; }
 
-        .step-num {
-            background: var(--accent-blue);
-            color: var(--bg);
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 1.1rem;
-            margin-right: 8px;
-        }
+        a.external-link { color: var(--accent-blue); text-decoration: none; border-bottom: 1px dotted var(--accent-blue); transition: color 0.2s; }
+        a.external-link:hover { color: var(--accent-pink); border-bottom-color: var(--accent-pink); }
 
-        .sub-title {
-            color: var(--accent-pink);
-            margin-top: 35px;
-            margin-bottom: 15px;
-            font-size: 1.2rem;
-            font-weight: bold;
-        }
-
-        .text-body p {
-            margin-bottom: 1.2rem;
-            color: #c9d1d9;
-        }
-
-        .list-item {
-            margin-bottom: 8px;
-            padding-left: 20px;
-            position: relative;
-            color: #c9d1d9;
-        }
-
-        .list-item::before {
-            content: "•";
-            position: absolute;
-            left: 0;
-            color: var(--accent-blue);
-            font-weight: bold;
-        }
-
-        a.external-link {
-            color: var(--accent-blue);
-            text-decoration: none;
-            border-bottom: 1px dotted var(--accent-blue);
-            transition: color 0.2s;
-        }
-
-        a.external-link:hover {
-            color: var(--accent-pink);
-            border-bottom-color: var(--accent-pink);
-        }
-
-        /* Mobile Adjustments */
         @media (max-width: 800px) {
             body { flex-direction: column; }
-            nav {
-                width: 100%;
-                height: auto;
-                position: relative;
-                border-right: none;
-                border-bottom: 1px solid var(--border);
-            }
+            nav { width: 100%; height: auto; position: relative; border-right: none; border-bottom: 1px solid var(--border); }
             main { padding: 30px 20px; }
-            #page-title { font-size: 1.8rem; }
+            h1.page-title { font-size: 1.8rem; }
         }
     </style>
 </head>
@@ -223,7 +159,6 @@
 
     <nav>
         <div class="brand-container" onclick="goHome(event)">
-            <!-- Icon loads from your root folder. Safe fallback if missing -->
             <img src="icon.png" alt="Icon" class="brand-icon" onerror="this.style.display='none'">
             <span class="brand-text">DIYHRT MM</span>
         </div>
@@ -237,96 +172,94 @@
     </nav>
 
     <main>
-        <!-- Homepage View -->
         <div id="home-content">
-            <h1 style="color: var(--text-primary); font-size: 2.2rem;">Welcome to DIYHRT MM</h1>
+            <h1 style="color: var(--text-primary); font-size: 2.2rem; margin-top:0;">Welcome to DIYHRT MM</h1>
             <p style="color: var(--text-secondary); font-size: 1.1rem;">Select a guide from the menu to read the documentation.</p>
         </div>
 
-        <!-- Document View -->
-        <div id="txt-content-wrapper">
-            <h1 id="page-title"></h1>
+        <div id="txt-content-wrapper" style="display:none;">
+            <!-- The title now renders strictly from the # tag inside your text file! -->
             <div id="text-container" class="text-body">Loading...</div>
         </div>
     </main>
 
     <script>
-        // Formatting Engine: Converts your specific .txt format to HTML safely
-        function parseTextToHTML(text) {
-            // Remove the title from the .txt body if it matches the header (optional cleanup)
-            const lines = text.split('\n');
-            if(lines.length > 2 && lines[2].includes('Transfeminine')) {
-                text = text.replace(lines[2], ''); 
-            }
+        // THE MAGIC ENGINE: Translates your custom .txt markdown into HTML
+        function parseMarkdownLite(text) {
+            // 1. Color Tags: [color:red]text[/color] or [color:#ff7b72]text[/color]
+            text = text.replace(/\[color:([^\]]+)\](.*?)\[\/color\]/gi, '<span style="color: $1;">$2</span>');
+            
+            // 2. Bold (**text**) and Italic (*text*)
+            text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+            text = text.replace(/\*(.*?)\*/g, '<em>$1</em>');
 
-            // Format Warning Disclaimer
-            text = text.replace(/⚠️(.*?)\n/g, '<div class="alert-box">⚠️ $1</div>');
+            // 3. Auto-Links
+            text = text.replace(/(?<!["'])(https?:\/\/[^\s\)]+)/g, '<a href="$1" class="external-link" target="_blank">$1</a>');
 
-            // Format Main Headings [1] Estrogen
-            text = text.replace(/^\[(\d+)\]\s*(.*)$/gm, '<h2 class="section-title"><span class="step-num">$1</span> $2</h2>');
+            // 4. Split document into block paragraphs by double-spacing
+            let blocks = text.split(/\n{2,}/);
+            
+            let htmlBlocks = blocks.map(block => {
+                block = block.trim();
+                if (!block) return '';
 
-            // Format Sub Headings [ sublingual/buccal... ]
-            text = text.replace(/^\[\s*([^\]]+?)\s*\]$/gm, '<div class="sub-title">$1</div>');
-
-            // Format Bullet Points (• or -)
-            text = text.replace(/^[•\-]\s+(.*)$/gm, '<div class="list-item">$1</div>');
-
-            // Format Links & Telegram Handles
-            text = text.replace(/(https?:\/\/[^\s\)]+)/g, '<a href="$1" class="external-link" target="_blank" rel="noopener noreferrer">$1</a>');
-            text = text.replace(/t\.me\/@?([a-zA-Z0-9_]+)/g, '<a href="https://t.me/$1" class="external-link" target="_blank" rel="noopener noreferrer">t.me/$1</a>');
-
-            // Wrap regular text blocks in Paragraph tags
-            let htmlChunks = text.split(/\n{2,}/).map(chunk => {
-                if (chunk.trim() === '') return '';
-                if (chunk.trim().startsWith('<') && !chunk.trim().startsWith('<strong') && !chunk.trim().startsWith('<a')) {
-                    return chunk; // It's already parsed HTML
+                // Warning / Alert Boxes
+                if (block.startsWith('⚠️')) {
+                    return `<div class="alert-box">${block.replace(/\n/g, '<br>')}</div>`;
                 }
-                return `<p>${chunk.replace(/\n/g, '<br>')}</p>`;
+
+                // Headers (# H1, ## H2, ### H3)
+                if (block.startsWith('### ')) return `<h3 class="sub-title">${block.substring(4)}</h3>`;
+                if (block.startsWith('## ')) return `<h2 class="section-title">${block.substring(3)}</h2>`;
+                if (block.startsWith('# ')) return `<h1 class="page-title">${block.substring(2)}</h1>`;
+
+                // Bullet Lists (Detects lines starting with - or •)
+                if (block.match(/^[•\-]\s/m)) {
+                    let listItems = block.split('\n').map(line => {
+                        if (line.match(/^[•\-]\s/)) {
+                            return `<div class="list-item">${line.replace(/^[•\-]\s+/, '')}</div>`;
+                        }
+                        return line;
+                    }).join('');
+                    return `<div class="list-group">${listItems}</div>`;
+                }
+
+                // Standard text paragraph
+                return `<p>${block.replace(/\n/g, '<br>')}</p>`;
             });
 
-            return htmlChunks.join('');
+            return htmlBlocks.join('\n\n');
         }
 
-        // Core Function to fetch and load .txt files
-        async function loadPage(event, category, fileId, title) {
+        async function loadPage(event, category, fileId, menuTitle) {
             if (event) event.preventDefault();
 
             const homeWrapper = document.getElementById('home-content');
             const txtWrapper = document.getElementById('txt-content-wrapper');
             const txtContainer = document.getElementById('text-container');
-            const titleEl = document.getElementById('page-title');
 
-            // Update UI State
             homeWrapper.style.display = 'none';
             txtWrapper.style.display = 'block';
-            titleEl.textContent = title;
             txtContainer.innerHTML = "<p>Loading file...</p>";
-            document.title = title + " - DIYHRT MM";
+            document.title = menuTitle + " - DIYHRT MM";
 
-            // Update URL without reloading
-            window.history.pushState({category, fileId, title}, '', `/${category}/${fileId}`);
+            window.history.pushState({category, fileId, menuTitle}, '', `/${category}/${fileId}`);
 
-            // Fetch the text file from the folder structure
             try {
                 const response = await fetch(`/txt/${category}/${fileId}.txt`);
-                if (!response.ok) throw new Error('File not found on server.');
-                
+                if (!response.ok) throw new Error('File not found');
                 const rawText = await response.text();
-                // Pass the fetched text through the formatting engine
-                txtContainer.innerHTML = parseTextToHTML(rawText);
                 
+                // Parse text using our new engine
+                txtContainer.innerHTML = parseMarkdownLite(rawText);
             } catch (error) {
-                txtContainer.innerHTML = `<div class="alert-box">Error: Could not load the text file. Please make sure <strong>/txt/${category}/${fileId}.txt</strong> exists on your server.</div>`;
+                txtContainer.innerHTML = `<div class="alert-box">Error: Could not load <strong>/txt/${category}/${fileId}.txt</strong></div>`;
             }
 
-            // Update active state in menu
             document.querySelectorAll('.menu-link').forEach(link => link.classList.remove('active'));
-            if(event && event.target) {
-                event.target.classList.add('active');
-            }
+            if(event && event.target) event.target.classList.add('active');
         }
 
-        // Return to home state
         function goHome(event) {
             if (event) event.preventDefault();
             document.getElementById('home-content').style.display = 'block';
@@ -336,10 +269,9 @@
             document.querySelectorAll('.menu-link').forEach(link => link.classList.remove('active'));
         }
 
-        // Handle Browser Back/Forward buttons
         window.addEventListener('popstate', (event) => {
             if (event.state && event.state.category) {
-                loadPage(null, event.state.category, event.state.fileId, event.state.title);
+                loadPage(null, event.state.category, event.state.fileId, event.state.menuTitle);
             } else {
                 goHome(null);
             }
