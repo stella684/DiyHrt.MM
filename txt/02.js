@@ -12,7 +12,7 @@ Anti-androgen ဆေးများ
 - gale 40mg 10 လုံး - 60000 MMK
 - လေးပိုင်းပိုင်းလိုက်ပြီး တစ်ရက်တစ်ပိုင်းဆို ရက်40စာရမှာဖြစ်ပြီး နှစ်ရက်တစ်ပိုင်းဆို ရက်80စာရပါမယ်
 
-အသေးစိတ်တွင်ထားတာကို :
+အသေးစိတ်တွက်ထားတာကို :
 https://docs.google.com/spreadsheets/d/15OTRzg8fjEEjZkzfu91qEgNIPWOTp5JYYqhSIk86t5Q/edit?gid=0#gid=0
 ထဲမှာကြည့်လို့ရပါတယ်
 
