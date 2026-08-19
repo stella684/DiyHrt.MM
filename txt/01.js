@@ -7,7 +7,7 @@ window.PAGES['01'] = `
 # Transfeminine များအတွက် HRT (Hormone Replacement Therapy) Sublingual/Buccal လမ်းညွှန်အကျဉ်း
 
 ယခုလမ်းညွှန်ကHRTကိုsublingual/buccalနည်းလမ်းနဲ့သွားချင်တဲ့သူတွေအတွက်ပါ
-**sublingual/buccal** လုပ်တာက ရိုးရိုးသောက်တာထက် ပိုပြီးဆေးအာနိသင် သက်ရောက်ပါတယ်ရ
+**sublingual/buccal** လုပ်တာက ရိုးရိုးသောက်တာထက် ပိုပြီးဆေးအာနိသင် သက်ရောက်ပါတယ်။
 
 ## [1] Estrogen (အီစထရိုဂျင်)
 HRT စတင်ရာမှာ **Estrogen** က အရေးအပါတဲ့ ဟော်မုန်းဖြစ်ပါတယ်။
