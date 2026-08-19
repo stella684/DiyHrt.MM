@@ -100,5 +100,5 @@ T Blocker ( Anti-androgen) သုံးရင် Vitamins B12 ဆေးလုံ
 
 Estrofem နဲ့ Anti-androgen ကိုဈေးအသက်သာဆုံး https://t.me/sumflower245 မှာဝယ်ယူနိုင်ပါတယ် *( not my shop lol, I'm just recommending a good supplier, she sell HRT supplies very cheap compared to others )*
 
-မသိတာ/မရှင်းတာရှိရင် https://t.me/Needy_Stella ကိုလာမေးလို့ရပါတယ်
+မသိတာ/မရှင်းတာရှိရင် https://t.me/trans_haven_myanmar မှာလာမေးလို့ရပါတယ်
 `;
