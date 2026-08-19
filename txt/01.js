@@ -96,7 +96,7 @@ T Blocker ( Anti-androgen ) လဲမသုံး။ ကိုယ့် Estrogen
 
 T Blocker ( Anti-androgen) သုံးပြီး ကိုယ်ကလဲ Estrogen သောက်နေပေမဲ့ကိုယ်သောက်တဲ့ပမာဏနည်းနေရင်အရိုးနုသက်ဆိုင်တဲ့ပြဿနာတွေလာဖြစ်နိုင်တာမလို့ ပိုက်ဆံတတ်နိုင်ရင် **estrofem 3mg-4mg** လောက်သောက်စေချင်ပါတယ်။
 
-T Blocker ( Anti-androgen) သုံးရင် Vitamins B12 ဆေးလုံးလေးတွေ တစ်နေ့တစ်လုံးလောက်သောက်ပါ *( တစ်လုံးမှ ၁၀၀ ကျပ်ဘဲရှိပါတယ် )*
+T Blocker ( Anti-androgen) သုံးရင် Vitamins B12 ဆေးလုံးလေးတွေ တစ်နေ့တစ်လုံးလောက်သောက်ပါ *( တစ်လုံးမှ ၁၀၀ ကျပ်ဘဲရှိပါတယ် )*, 1000mcg dose ၀ယ်သောက်ရင်ပိုအဆင်ပြေပါတယ်
 
 Estrofem နဲ့ Anti-androgen ကိုဈေးအသက်သာဆုံး https://t.me/sumflower245 မှာဝယ်ယူနိုင်ပါတယ် *( not my shop lol, I'm just recommending a good supplier, she sell HRT supplies very cheap compared to others )*
 
