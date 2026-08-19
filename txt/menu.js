@@ -7,6 +7,11 @@ window.MENU = [
             { fileId: "03", name: "ခန္ဓာကိုယ်ပြောင်းလဲမှုများ" }, 
             { fileId: "04", name: "သွေးစစ်ခြင်းလမ်းညွှန်" }
             // Add more: { fileId: "02", name: "Anti-Androgens" }
+        ], 
+        category: "Extra",
+        links: [
+            { fileId: "05", name: "Disclaimer & Others" }
+            // Add more: { fileId: "02", name: "Anti-Androgens" }
         ]
     }
 ];
