@@ -1,6 +1,6 @@
 window.MENU = [
     {
-        category: "Guide",
+        category: "Guide Transfeminine",
         links: [
             { fileId: "01", name: "Transfeminine များအတွက် HRT Sublingual/Buccal လမ်းညွှန်အကျဉ်း" }, 
             { fileId: "02", name: "ကုန်ကျမည့်ငွေပမာဏများ" }, 
