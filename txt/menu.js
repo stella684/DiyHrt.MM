@@ -13,8 +13,8 @@ window.MENU = [
     category: " ( Sublingual/Buccal ) နှင့်သက်ဆိုင်သော",
     links: [
       { fileId: "sublingual-buccal-guide", name: "Sublingual/Buccal အပြည့်အစုံ" },
-      { fileId: "cost", name: "ကုန်ကျငွေ" }, 
-      { fileId: "04", name: "ဟော်မုန်းစစ်နည်း" }
+      { fileId: "costs", name: "ကုန်ကျငွေ" }, 
+      { fileId: "sublingual-buccal-bloodtest", name: "ဟော်မုန်းစစ်နည်း" }
     ]
   }, 
   {
