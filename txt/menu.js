@@ -12,7 +12,7 @@ window.MENU = [
   {
     category: "Transfeminine ( Sublingual/Buccal )",
     links: [
-      { fileId: "01", name: "Sublingual/Buccal အပြည့်အစုံ" },
+      { fileId: "sublingual-buccal-guide", name: "Sublingual/Buccal အပြည့်အစုံ" },
       { fileId: "02", name: "ကုန်ကျငွေ" }, 
       { fileId: "04", name: "ဟော်မုန်းစစ်နည်း" }
     ]
