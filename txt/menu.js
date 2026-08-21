@@ -10,15 +10,15 @@ window.MENU = [
 
   // ── YOUR EXISTING CATEGORY ──
   {
-    category: "Transfeminine ( Sublingual/Buccal )",
+    category: " ( Sublingual/Buccal ) နှင့်သက်ဆိုင်သော",
     links: [
       { fileId: "sublingual-buccal-guide", name: "Sublingual/Buccal အပြည့်အစုံ" },
-      { fileId: "02", name: "ကုန်ကျငွေ" }, 
+      { fileId: "cost", name: "ကုန်ကျငွေ" }, 
       { fileId: "04", name: "ဟော်မုန်းစစ်နည်း" }
     ]
   }, 
   {
-    category: "Transfeminine ( Injections ) ",
+    category: "Transfeminine ( Injections ) နှင့်သက်ဆိုင်သော",
     links: [
       { fileId: "injection-introduction" , name: "Coming Soon" }
     ]
