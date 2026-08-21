@@ -4,7 +4,7 @@ window.MENU = [
     category: "Transfeminine",
     links: [
       { fileId: "diy-hrt-introduction" , name: "Diy-Hrt မိတ်ဆက်" },
-      { fileId: "03", name: "ခန္ဓာကိုယ်ပြောင်းလဲမှုများ" }
+      { fileId: "expect-changes", name: "ခန္ဓာကိုယ်ပြောင်းလဲမှုများ" }
     ]
   },
 
