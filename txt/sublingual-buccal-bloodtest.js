@@ -1,5 +1,5 @@
 window.PAGES = window.PAGES || {};
-window.PAGES['ublingual-buccal-bloodtest'] = `
+window.PAGES['sublingual-buccal-bloodtest'] = `
 
 ⚠️ Disclaimer: This guide is for educational and harm-reduction purposes only. It is NOT medical advice.
 
