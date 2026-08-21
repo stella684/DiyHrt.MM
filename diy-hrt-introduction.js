@@ -1,5 +1,5 @@
 window.PAGES = window.PAGES || {};
-window.PAGES['diy-hrt-introduction'] = `
+window.PAGES['06'] = `
 
 ⚠️ Disclaimer: This guide is for educational and harm reduction purposes only and does not constitute medical advice. Consult a healthcare professional where possible.
 
