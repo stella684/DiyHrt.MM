@@ -3,7 +3,7 @@ window.MENU = [
   {
     category: "Transfeminine",
     links: [
-      { fileId: "diy-hrt-introduction" , name: "Diy Hrt မိတ်ဆက်" },
+      { fileId: "diy-hrt-introduction" , name: "Diy-Hrt မိတ်ဆက်" },
       { fileId: "03", name: "ခန္ဓာကိုယ်ပြောင်းလဲမှုများ" }
     ]
   },
@@ -15,7 +15,7 @@ window.MENU = [
       { fileId: "sublingual-buccal-introduction", name: "Sublingual/Buccal မိတ်ဆက်" },
       { fileId: "01", name: "Sublingual/Buccal အပြည့်အစုံ" },
       { fileId: "02", name: "ကုန်ကျငွေ" }, 
-      { fileId: "04", name: "သွေးစစ်ခြင်း" }
+      { fileId: "04", name: "ဟော်မုန်းစစ်နည်း" }
     ]
   }, 
   {
