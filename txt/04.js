@@ -3,6 +3,8 @@ window.PAGES['04'] = `
 
 ⚠️ Disclaimer: This guide is for educational and harm-reduction purposes only. It is NOT medical advice.
 
+⚠️ : monothreapy or anti-androgen မပါဘဲ injection ထိုးတဲ့သူများအတွက် blood test guide မဟုတ်ပါ။ estrogen နဲ့ anti-androgen တွဲသုံးတဲ့သူများအတွက် blood test ဖြစ်ပါတယ်
+
 # သွေးစစ်ခြင်း (Blood Testing)
 
 ဒီ document မှာတော့ ဘယ်အချိန်သွေးစစ်ရမလဲ၊ ဘာကိုစစ်ရမလဲ၊ ဆရာဝန်ရဲ့ညွှန်ကြားချက်မပါဘဲ ဘယ်လိုဖတ်ရမလဲတို့ဘဲဖြစ်ပါတယ်။
